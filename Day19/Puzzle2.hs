@@ -7,14 +7,13 @@ import qualified Data.Map as Map
 import Debug.Trace
 
 countPossibleCombinations :: [String] -> String -> Int
-countPossibleCombinations patterns design = matchPatterns (length design - 1) patterns Map.empty
-    where matchPatterns 0 (p:ps) cache | isPrefixOf p design = matchPatterns (length p) patterns cache + matchPatterns 0 ps cache
-                                       | otherwise = matchPatterns 0 ps cache
-          matchPatterns _ [] _ = 0
-          matchPatterns n (p:ps) cache | n >= length design = 1
-                                       | Map.member n cache = cache Map.! n
-                                       | otherwise = let count = (if isPrefixOf p (drop n design) then matchPatterns (n + length p) patterns cache else 0) + matchPatterns n ps cache
-                                                     in if (p:ps) == patterns then matchPatterns (n - 1) patterns (Map.insert n count cache) else count
+countPossibleCombinations patterns design = matchPatterns (length design - 1) patterns True Map.empty
+    where matchPatterns _ [] _ _ = 0
+          matchPatterns n (p:ps) first cache
+              | n >= length design = 1
+              | Map.member n cache = cache Map.! n
+              | otherwise = let count = (if isPrefixOf p (drop n design) then matchPatterns (n + length p) patterns True cache else 0) + matchPatterns n ps False cache
+                            in if n > 0 && first then matchPatterns (n - 1) patterns True (Map.insert n count cache) else count
 
 main :: IO ()
 main = do
