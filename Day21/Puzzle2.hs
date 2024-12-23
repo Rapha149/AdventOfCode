@@ -39,12 +39,12 @@ getPossiblePaths numpad (a, b) | buttons == [] = ["A"]
           yDiff = y2 - y1
           buttons = filter (\(c, n) -> n > 0) [(if xDiff >= 0 then '>' else '<', abs xDiff), (if yDiff >= 0 then 'v' else '^', abs yDiff)]
           isAllowed :: [(Char, Int)] -> Bool
-          isAllowed ((c, n):_) = let newPos = case c of
+          isAllowed ((c, n):_) = case c of
                                         '^' -> (x1, y1 - n)
                                         'v' -> (x1, y1 + n)
                                         '<' -> (x1 - n, y1)
                                         '>' -> (x1 + n, y1)
-                                 in newPos /= if numpad then (0, 3) else (0, 0)
+                                 /= if numpad then (0, 3) else (0, 0)
 
 getPathsForCombos :: Bool -> [Char] -> [((Char, Char), [String])]
 getPathsForCombos numpad = map (\a -> (a, getPossiblePaths numpad a)) . combos
