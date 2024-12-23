@@ -55,9 +55,12 @@ pathToPairs path = pathToPairs' 'A' path
           pathToPairs' _ [] = []
           pathToPairs' a (b:cs) = (a, b) : pathToPairs' b cs
 
-modifyCosts :: [((Char, Char), [String])] -> Map.Map (Char, Char) Int -> Map.Map (Char, Char) Int
-modifyCosts [] _ = Map.empty
-modifyCosts ((c,ps):otherPaths) costs = Map.insert c (minimum $ map (\path -> foldr (\a b -> costs Map.! a + b) 0 $ pathToPairs path) ps) $ modifyCosts otherPaths costs
+modifyCosts :: Int -> [((Char, Char), [String])] -> Map.Map (Char, Char) Int -> Map.Map (Char, Char) Int
+modifyCosts 0 _ costs = costs
+modifyCosts n paths costs = modifyCosts (n - 1) paths $ modifyCosts' paths
+    where modifyCosts' :: [((Char, Char), [String])] -> Map.Map (Char, Char) Int
+          modifyCosts' [] = Map.empty
+          modifyCosts' ((c,ps):otherPaths) = Map.insert c (minimum $ map (\path -> foldr (\a b -> costs Map.! a + b) 0 $ pathToPairs path) ps) $ modifyCosts' otherPaths
 
 getComplexity :: Map.Map (Char, Char) Int -> String -> Int
 getComplexity costs code = (sum $ map (costs Map.!) $ pathToPairs code) * read (take (length code - 1) code)
@@ -68,7 +71,7 @@ main = do
     let codes = lines content
         dirPaths = getPathsForCombos False "A<^v>"
         dirCosts = Map.fromList $ map (\(c, p) -> (c, minimum $ map length p)) dirPaths
-        newDirCosts = modifyCosts dirPaths dirCosts
+        newDirCosts = modifyCosts 24 dirPaths dirCosts
         numPaths = getPathsForCombos True "A0123456789"
-        numCosts = modifyCosts numPaths newDirCosts
+        numCosts = modifyCosts 1 numPaths newDirCosts
     print $ sum $ map (getComplexity numCosts) codes
