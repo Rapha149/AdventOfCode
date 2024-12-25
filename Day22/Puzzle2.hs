@@ -1,12 +1,9 @@
 module Main where
 import Data.Maybe
-import Data.List
-import Data.List.Split
 import Data.Bits
 import Data.Char
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-import Debug.Trace
 
 getLastDigit :: Int -> Int
 getLastDigit n = digitToInt $ nStr !! (length nStr - 1)

@@ -1,14 +1,7 @@
 module Main where
-import Data.Char
-import Data.List
 import Data.List.Split
 import Data.Bits
 import qualified Data.Map as Map
-import qualified Data.Set as Set
-import Text.Regex.TDFA
-import Data.Maybe
-import Debug.Trace
-import Data.Time (getCurrentTime, diffUTCTime)
 
 data Registers = Registers { a :: Int, b :: Int, c :: Int } deriving Show
 
@@ -47,7 +40,7 @@ findRegisterA program programMap registers bits b | program == output = a
                                                   | otherwise = findRegisterA program programMap registers bits $ b + 1
     where a = bitsToNumber (b:bits) 0
           output = reverse $ runProgram programMap (registers { a = a }) 0
-          n = trace (show (b:bits)) length bits + 1
+          n = length bits + 1
 
 main :: IO ()
 main = do
@@ -56,7 +49,4 @@ main = do
         registers = Registers { a = parseRegisterValue $ contentLines !! 0, b = parseRegisterValue $ contentLines !! 1, c = parseRegisterValue $ contentLines !! 2 }
         program = map read $ splitOn "," $ words (contentLines !! 4) !! 1 :: [Int]
         programMap = Map.fromList $ zip [0..] program
-    startTime <- getCurrentTime
     print $ findRegisterA (reverse program) programMap registers [] 0
-    endTime <- getCurrentTime
-    print $ (realToFrac (diffUTCTime endTime startTime) :: Double) * 1000

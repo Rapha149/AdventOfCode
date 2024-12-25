@@ -1,6 +1,4 @@
 module Main where
-import Data.Maybe
-import Data.Time (getCurrentTime, diffUTCTime)
 import qualified Data.Set as Set
 import qualified Data.PriorityQueue.FingerTree as PQ
 
@@ -43,7 +41,4 @@ main :: IO ()
 main = do
     content <- readFile "input.txt"
     let (obstacles, start, end) = parseContent (lines content) 0 Set.empty (-1, -1) (-1, -1)
-    startTime <- getCurrentTime
     print $ bfs obstacles end (PQ.singleton 0 (start, 1)) Set.empty
-    endTime <- getCurrentTime
-    print $ (realToFrac (diffUTCTime endTime startTime) :: Double) * 1000

@@ -1,13 +1,7 @@
 module Main where
-import Data.Char
-import Data.List
 import Data.List.Split
 import Data.Bits
 import qualified Data.Map as Map
-import qualified Data.Set as Set
-import Text.Regex.TDFA
-import Data.Maybe
-import Debug.Trace
 
 data Registers = Registers { a :: Int, b :: Int, c :: Int } deriving Show
 
@@ -34,7 +28,7 @@ runProgram program registers pointer | Map.notMember pointer program = []
                                                            6 -> runProgram program (registers { b = a registers `div` 2 ^ comboOperand }) $ pointer + 2
                                                            7 -> runProgram program (registers { c = a registers `div` 2 ^ comboOperand }) $ pointer + 2
     where Just opcode = Map.lookup pointer program
-      Just operand = Map.lookup (pointer + 1) program
+          Just operand = Map.lookup (pointer + 1) program
 
 
 main :: IO ()

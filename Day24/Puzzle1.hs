@@ -1,12 +1,7 @@
 module Main where
 import Data.Maybe
-import Data.List
 import Data.List.Split
-import Data.Bits
-import Data.Char
-import qualified Data.Set as Set
 import qualified Data.Map as Map
-import Debug.Trace
 
 data Gate = Gate { in1 :: String, in2 :: String, op :: String, out :: String } deriving Show
 

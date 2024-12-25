@@ -1,11 +1,6 @@
 module Main where
-import Data.Char
-import Data.List
-import qualified Data.Map as Map
-import qualified Data.Map.Strict as Map.Strict
 import qualified Data.Set as Set
 import Text.Regex.TDFA
-import Data.Maybe
 import Codec.Picture
 import Codec.Picture.Types
 

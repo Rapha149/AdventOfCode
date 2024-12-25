@@ -1,5 +1,4 @@
 module Main where
-import Data.Maybe
 import Data.List.Split
 import qualified Data.Set as Set
 import qualified Data.PriorityQueue.FingerTree as PQ

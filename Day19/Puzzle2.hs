@@ -1,10 +1,7 @@
 module Main where
-import Data.Maybe
 import Data.List
 import Data.List.Split
-import qualified Data.Set as Set
 import qualified Data.Map as Map
-import Debug.Trace
 
 countPossibleCombinations :: [String] -> String -> Int
 countPossibleCombinations patterns design = matchPatterns (length design - 1) patterns True Map.empty

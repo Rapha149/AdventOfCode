@@ -1,10 +1,5 @@
 module Main where
-import Data.Maybe
-import Data.List
-import Data.List.Split
-import qualified Data.Set as Set
 import qualified Data.Map as Map
-import Debug.Trace
 
 buttonToPos :: Bool -> Char -> (Int, Int)
 buttonToPos True button = case button of

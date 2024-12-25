@@ -1,5 +1,4 @@
 module Main where
-import Data.List
 
 stringToReport :: String -> [Int]
 stringToReport str = map read (words str)

@@ -1,9 +1,6 @@
 module Main where
-import Data.Maybe
 import Data.List
 import Data.List.Split
-import qualified Data.Set as Set
-import Debug.Trace
 
 isDesignPossible :: [String] -> String -> Bool
 isDesignPossible patterns design = matchPatterns design patterns

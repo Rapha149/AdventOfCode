@@ -1,7 +1,6 @@
 module Main where
 import Data.Char
 import qualified Data.Map as Map
-import qualified Data.Map.Strict as Map.Strict
 
 insertBlocks :: Int -> Int -> Int -> Map.Map Int Int -> Map.Map Int Int
 insertBlocks _ _ 0 ids = ids
@@ -24,7 +23,7 @@ moveBlocks ids indices free | blockIndex > freeIndex = moveBlocks (Map.insert fr
                             | otherwise = ids
     where blockIndex = head indices
           freeIndex = head free
-          blockId = ids Map.Strict.! blockIndex
+          blockId = ids Map.! blockIndex
 
 main :: IO ()
 main = do
@@ -32,4 +31,4 @@ main = do
     let (blocks, freeSpace) = parseContent (head $ lines content) 0 0 Map.empty []
         indices = reverse $ Map.keys blocks
         moved = moveBlocks blocks indices freeSpace
-    print $ Map.Strict.foldrWithKey (\k v acc -> k * v + acc) 0 moved
+    print $ Map.foldrWithKey (\k v acc -> k * v + acc) 0 moved

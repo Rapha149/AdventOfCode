@@ -1,7 +1,6 @@
 module Main where
 import Data.Maybe
 import Data.List
-import Debug.Trace
 import qualified Data.Set as Set
 
 getStartPoint :: [String] -> Int -> (Int, Int)

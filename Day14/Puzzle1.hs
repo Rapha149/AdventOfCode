@@ -1,10 +1,5 @@
 module Main where
-import Data.Char
-import qualified Data.Map as Map
-import qualified Data.Map.Strict as Map.Strict
-import qualified Data.Set as Set
 import Text.Regex.TDFA
-import Data.Maybe
 
 maxX = 101 :: Int
 maxY = 103 :: Int

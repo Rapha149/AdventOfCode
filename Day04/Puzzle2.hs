@@ -1,6 +1,5 @@
 module Main where
 import Data.List
-import Text.Regex.TDFA
 
 count :: [String] -> Int -> Int -> Int
 count matrix row col | row + 2 >= length matrix = 0

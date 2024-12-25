@@ -1,10 +1,6 @@
 module Main where
-import Data.Maybe
-import Data.List
-import Data.List.Split
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-import Debug.Trace
 
 data ParseState = ParseState { obstacles :: [(Int, Int)], start :: (Int, Int), end :: (Int, Int) }
 

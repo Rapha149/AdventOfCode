@@ -1,12 +1,5 @@
 module Main where
-import Data.Char
-import Data.List
 import qualified Data.Map as Map
-import qualified Data.Map.Strict as Map.Strict
-import qualified Data.Set as Set
-import Text.Regex.TDFA
-import Data.Maybe
-import Debug.Trace
 
 parseMapContentLine :: String -> Int -> Int -> Map.Map (Int, Int) Char -> Map.Map (Int, Int) Char
 parseMapContentLine [] _ _ coords = coords
@@ -27,7 +20,7 @@ moveObstacle coords firstPoint point dir | nextObstacle == '#' = (coords, False)
                                          | nextObstacle == '.' = (Map.insert nextPoint 'O' $ Map.insert firstPoint '.' coords, True)
                                          | nextObstacle == 'O' = moveObstacle coords firstPoint nextPoint dir
     where nextPoint = getNextPoint point dir
-          nextObstacle = coords Map.Strict.! nextPoint
+          nextObstacle = coords Map.! nextPoint
 
 move :: Map.Map (Int, Int) Char -> (Int, Int) -> Char -> (Map.Map (Int, Int) Char, (Int, Int))
 move coords point dir | nextObstacle == '#' = (coords, point)
@@ -35,7 +28,7 @@ move coords point dir | nextObstacle == '#' = (coords, point)
                       | nextObstacle == 'O' = let (newCoords, success) = moveObstacle coords nextPoint nextPoint dir
                                               in if success then (newCoords, nextPoint) else (coords, point)
     where nextPoint = getNextPoint point dir
-          nextObstacle = coords Map.Strict.! nextPoint
+          nextObstacle = coords Map.! nextPoint
 
 processMoves :: String -> Map.Map (Int, Int) Char -> (Int, Int) -> Map.Map (Int, Int) Char
 processMoves [] coords _ = coords

@@ -1,10 +1,7 @@
 module Main where
-import Data.Maybe
-import Data.Time (getCurrentTime, diffUTCTime)
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 import qualified Data.PriorityQueue.FingerTree as PQ
-import Debug.Trace
 
 parseContentLine :: String -> Int -> Int -> Set.Set (Int, Int) -> (Int, Int) -> (Int, Int) -> (Set.Set (Int, Int), (Int, Int), (Int, Int))
 parseContentLine [] _ _ obstacles start end = (obstacles, start, end)
@@ -54,8 +51,5 @@ main :: IO ()
 main = do
     content <- readFile "input.txt"
     let (obstacles, start, end) = parseContent (lines content) 0 Set.empty (-1, -1) (-1, -1)
-    startTime <- getCurrentTime
     let (path, partialPaths) = bfs obstacles end (PQ.singleton 0 (start, 1, Set.empty)) Set.empty Map.empty Nothing
     print $ 2 + (length $ unionPartialPaths $ Set.toList $ Set.map snd $ Set.map (partialPaths Map.!) path)
-    endTime <- getCurrentTime
-    print $ (realToFrac (diffUTCTime endTime startTime) :: Double) * 1000

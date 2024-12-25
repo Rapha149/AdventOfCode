@@ -1,12 +1,11 @@
 module Main where
 import qualified Data.Map as Map
-import qualified Data.Map.Strict as Map.Strict
 import qualified Data.Set as Set
 
 parseLine :: String -> Int -> Int -> Map.Map Char [(Int, Int)] -> Map.Map Char [(Int, Int)]
 parseLine [] _ _ m = m
 parseLine (c:cs) x y m | c == '.' = parseLine cs (x + 1) y m
-                       | otherwise = parseLine cs (x + 1) y $ Map.Strict.insertWith (++) c [(x, y)] m
+                       | otherwise = parseLine cs (x + 1) y $ Map.insertWith (++) c [(x, y)] m
 
 parseLines :: [String] -> Int -> Map.Map Char [(Int, Int)] -> Map.Map Char [(Int, Int)]
 parseLines [] _ m = m
