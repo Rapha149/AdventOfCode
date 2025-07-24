@@ -26,3 +26,6 @@ cabal.project.local~
 images/
 input*.txt
 example*-input*.txt
+
+/aoc
+/template.hs
