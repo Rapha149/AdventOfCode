@@ -22,10 +22,11 @@ cabal.project.local~
 .HTF/
 .ghc.environment.*
 
+*.swp
+*-swp
 .directory
-images/
-input*.txt
-example*-input*.txt
-
-/aoc
-/template.hs
+/inputs
+/.yeartemplate
+/addyear
+/puzzle
+.env

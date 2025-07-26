@@ -1,0 +1,90 @@
+cabal-version:      3.0
+
+name:               advent-of-code
+version:            0.1.0.0
+license:            MIT
+license-file:       LICENSE
+author:             Rapha149
+maintainer:         rapha@rapha149.de
+homepage:           https://github.com/Rapha149/AdventOfCode
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall
+
+executable advent-of-code
+    import:           warnings
+    main-is:          Main.hs
+
+    other-modules:
+        Solution,
+        SelectYear,
+        Year2023,
+        Year2023.Day01,
+        Year2023.Day02,
+        Year2023.Day03,
+        Year2023.Day04,
+        Year2023.Day05,
+        Year2023.Day06,
+        Year2023.Day07,
+        Year2023.Day08,
+        Year2023.Day09,
+        Year2023.Day10,
+        Year2023.Day11,
+        Year2023.Day12,
+        Year2023.Day13,
+        Year2023.Day14,
+        Year2023.Day15,
+        Year2023.Day16,
+        Year2023.Day17,
+        Year2023.Day18,
+        Year2023.Day19,
+        Year2023.Day20,
+        Year2023.Day21,
+        Year2023.Day22,
+        Year2023.Day23,
+        Year2023.Day24,
+        Year2023.Day25,
+        Year2024,
+        Year2024.Day01,
+        Year2024.Day02,
+        Year2024.Day03,
+        Year2024.Day04,
+        Year2024.Day05,
+        Year2024.Day06,
+        Year2024.Day07,
+        Year2024.Day08,
+        Year2024.Day09,
+        Year2024.Day10,
+        Year2024.Day11,
+        Year2024.Day12,
+        Year2024.Day13,
+        Year2024.Day14,
+        Year2024.Day15,
+        Year2024.Day16,
+        Year2024.Day17,
+        Year2024.Day18,
+        Year2024.Day19,
+        Year2024.Day20,
+        Year2024.Day21,
+        Year2024.Day22,
+        Year2024.Day23,
+        Year2024.Day24,
+        Year2024.Day25
+
+    build-depends:
+        base ^>=4.18.3.0,
+        bytestring,
+        Clipboard,
+        containers,
+        directory,
+        dotenv,
+        extra,
+        fingertree,
+        http-client,
+        http-conduit,
+        http-types,
+        text
+
+    hs-source-dirs:   app
+    default-language: GHC2021
