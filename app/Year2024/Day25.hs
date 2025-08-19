@@ -1,9 +1,11 @@
-module Year2024.Day25 (part1, part2) where
+module Year2024.Day25 (part1) where
 
-import Solution
+import Util
+import Data.Tuple.Extra
+import Data.List
+import Data.List.Split
 
 part1 :: Solution
-part1 = undefined
-
-part2 :: Solution
-part2 = undefined
+part1 input = let (locks, keys) = both (map (map (subtract 1 . length . filter (== '#')) . transpose)) $
+                                  partition ((== "#####") . hd) $ splitOn [""] input
+              in V $ sum [1 | lock <- locks, key <- keys, all ((< 6) . uncurry (+)) $ zip lock key]

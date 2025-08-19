@@ -1,0 +1,53 @@
+module Util where
+
+data Result = V Int | Msg String | Error String
+type Solution = [String] -> Result
+
+type Vec = (Int, Int)
+
+hd :: [a] -> a
+hd (x:_) = x
+hd [] = error "hd: empty list"
+
+tl :: [a] -> [a]
+tl (_:xs) = xs
+tl [] = error "tl: empty list"
+
+lst :: [a] -> a
+lst [x] = x
+lst (_:xs) = lst xs
+lst [] = error "lst: empty list"
+
+ini :: [a] -> [a]
+ini [_] = []
+ini (x:xs) = x : ini xs
+ini [] = error "ini: empty list"
+
+tuple :: [a] -> (a, a)
+tuple [a, b] = (a, b)
+tuple _ = error "Not two elements."
+
+triple :: [a] -> (a, a, a)
+triple [a, b, c] = (a, b, c)
+triple _ = error "Not three elements."
+
+onBoth :: (a -> a -> b) -> (a, a) -> (a, a) -> (b, b)
+onBoth f (a, b) (c, d) = (f a c, f b d)
+
+toFst :: (a -> b) -> a -> (b, a)
+toFst f a = (f a, a)
+
+toSnd :: (a -> b) -> a -> (a, b)
+toSnd f a = (a, f a)
+
+inBounds :: Ord a => (a, a) -> (a, a) -> (a, a) -> Bool
+inBounds (minA, minB) (maxA, maxB) (a, b) = a >= minA && a < maxA && b >= minB && b < maxB
+
+inBounds0 :: (Num a, Ord a) => a -> a -> (a, a) -> Bool
+inBounds0 maxA maxB = inBounds (0, 0) (maxA, maxB)
+
+inBoundsBoth :: Ord a => a -> a -> (a, a) -> Bool
+inBoundsBoth minA maxA = inBounds (minA, minA) (maxA, maxA)
+
+(.:) :: (c -> d) -> (a -> b -> c) -> a -> b -> d
+(.:) = (.) . (.)

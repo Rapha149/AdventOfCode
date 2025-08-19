@@ -27,6 +27,7 @@ cabal.project.local~
 .directory
 /inputs
 /.yeartemplate
+/cbl
 /addyear
 /puzzle
 .env

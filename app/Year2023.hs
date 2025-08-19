@@ -1,6 +1,6 @@
 module Year2023 (selectDay) where
 
-import Solution
+import Util
 import qualified Year2023.Day01 as D01
 import qualified Year2023.Day02 as D02
 import qualified Year2023.Day03 as D03
@@ -78,5 +78,4 @@ selectDay day part = case (day, part) of
     (24, 1) -> D24.part1
     (24, 2) -> D24.part2
     (25, 1) -> D25.part1
-    (25, 2) -> D25.part2
-    _ -> const (-2)
+    _ -> const $ Error "Unknown day/part combination."

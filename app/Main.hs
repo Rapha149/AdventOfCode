@@ -1,43 +1,70 @@
 module Main (main) where
 
-import System.Environment (getArgs, lookupEnv)
-import System.Directory (createDirectoryIfMissing)
-import System.Exit (exitFailure)
-import System.IO (hPutStrLn, stderr)
-import System.IO.Error (catchIOError, isDoesNotExistError)
-import System.Clipboard
-import Control.Exception
-import qualified Configuration.Dotenv as Dotenv
-import Network.HTTP.Conduit
-import Network.HTTP.Types.Status (statusCode)
-import Network.HTTP.Types.Header (hCookie)
-import qualified Data.ByteString.Char8 as BS
-import qualified Data.ByteString.Lazy.Char8 as L8
 import Data.Char
 import Data.List.Extra
 import Text.Printf
+import Data.Time.Clock.POSIX
+import Control.Monad
+import System.Clipboard
+import System.Environment (getArgs, lookupEnv)
+import System.Directory (createDirectoryIfMissing)
+import System.IO (hPutStrLn, stderr)
+import System.IO.Error (catchIOError, isDoesNotExistError)
+import System.Exit (exitFailure)
+import Control.Exception
+import Network.HTTP.Conduit
+import Network.HTTP.Types.Status (statusCode)
+import Network.HTTP.Types.Header (hCookie)
+import qualified Configuration.Dotenv as Dotenv
+import qualified Data.ByteString.Char8 as BS
+import qualified Data.ByteString.Lazy.Char8 as L8
 
+import Util
 import SelectYear
 
 data Source = File | Stdin | Clipboard
-data Args = ArgError String | Options Int Int Int Source
+data Args = ArgError String | Options { time :: Bool, year :: Int, day :: Int, part :: Int, source :: Source, extra :: [String]}
 
 abort :: String -> IO ()
 abort err = hPutStrLn stderr err >> exitFailure
 
 parseArgs :: [String] -> Args
+parseArgs ("-t":xs) = case parseArgs xs of
+                           opts@(Options {}) -> opts { time = True }
+                           err -> err
 parseArgs [year, day, part] = parseArgs [year, day, part, "file"]
-parseArgs [year, day, part, source] | all (all isDigit) [year, day, part] = Options (read year) (read day) (read part) (case lower source of
-        "stdin" -> Stdin
-        "clip" -> Clipboard
-        _ -> File)
+parseArgs (year:day:part:_) | not $ all (all isDigit) [year, day, part] = ArgError "Specify numbers for year, day and part."
+parseArgs (_:_:_:source:_) | lower source `notElem` ["file", "stdin", "clip"] = ArgError "Specify 'file', 'stdin' or 'clip' for the source."
+parseArgs (year:day:part:source:extra) = Options { time = False,
+                                                   year = read year,
+                                                   day = read day,
+                                                   part = read part,
+                                                   source = case lower source of
+                                                               "file" -> File
+                                                               "stdin" -> Stdin
+                                                               "clip" -> Clipboard
+                                                               _ -> error "Unknown source argument.",
+                                                   extra }
 parseArgs _ = ArgError "Illegal number of arguments."
 
-start :: Args -> IO ()
-start (ArgError err) = abort $ "Wrong arguments: " <> err
-start (Options year day part stdin) = do
-    input <- loadInput year day stdin
-    putStrLn $ "\n" <> show (selectYear year day part (lines input))
+run :: Args -> IO ()
+run (ArgError err) = abort $ "Wrong arguments: " <> err
+run Options {..} = do
+    input <- loadInput year day source
+    putStrLn $ printf "Calculating result for year %d, day %d, part %d..." year day part
+    startTime <- getPOSIXTime
+    case selectYear year day part $ extra ++ lines input of
+         V value -> putStrLn $ printf "Result: %d" value
+         Msg msg -> putStrLn msg
+         Error err -> abort err
+    when time $ printTimeDiff startTime
+
+printTimeDiff :: POSIXTime -> IO ()
+printTimeDiff start = do
+    end <- getPOSIXTime
+    let diff :: Int
+        diff = round $ (end - start) * 1000
+    putStrLn $ printf "\nExecution time: %02d.%02d.%03d" (diff `div` 60000) ((diff `div` 1000) `mod` 60) (diff `mod` 1000)
 
 loadInput :: Int -> Int -> Source -> IO String
 loadInput _ _ Stdin = getContents
@@ -91,4 +118,4 @@ fetchInput year day = do
 main :: IO ()
 main = do
     args <- getArgs
-    start $ parseArgs args
+    run $ parseArgs args
