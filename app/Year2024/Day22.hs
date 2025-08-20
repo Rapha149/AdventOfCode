@@ -2,6 +2,7 @@ module Year2024.Day22 (part1, part2) where
 
 import Util
 import Data.Bits
+import Data.List.Extra
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
@@ -17,7 +18,7 @@ getPricesBySequence (a:b:c:d:e:xs) = Map.insert (b - a, c - b, d - c, e - d) e $
 getPricesBySequence _ = Map.empty
 
 part1 :: Solution
-part1 = V . foldr ((+) . lst . generateSecretNumbers 2000 . read) 0
+part1 = V . sumOn' (lst . generateSecretNumbers 2000 . read)
 
 part2 :: Solution
 part2 = V . maximum . Map.elems . foldr (Map.unionWith (+) . getPricesBySequence . map (`mod` 10) . generateSecretNumbers 2000 . read) Map.empty

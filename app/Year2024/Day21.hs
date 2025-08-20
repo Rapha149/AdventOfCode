@@ -1,6 +1,7 @@
 module Year2024.Day21 (part1, part2) where
 
 import Util
+import Data.List.Extra
 import Data.Tuple.Extra
 import Numeric
 import Data.Set (Set)
@@ -34,15 +35,15 @@ directional = toKeypad [               ('^', (1, 2)), ('A', (2, 2)),
 minCosts :: [Keypad] -> Map (Char, Char) Int -> Map (Char, Char) Int
 minCosts [] costs = costs
 minCosts (keypad:ks) costs = minCosts ks newCosts
-    where newCosts = Map.map (minimum . map (\path -> foldr ((+) . (costs Map.!)) 0 $ zip ('A':path) path)) keypad
+    where newCosts = Map.map (minimum . map (\path -> sumOn' (costs Map.!) $ zip ('A':path) path)) keypad
 
 getComplexity :: Map (Char, Char) Int -> String -> Int
-getComplexity costs code = foldr ((+) . (costs Map.!)) 0 (zip ('A':code) code) * fst (hd $ readDec code)
+getComplexity costs code = sumOn' (costs Map.!) (zip ('A':code) code) * fst (hd $ readDec code)
 
 part1 :: Solution
 part1 input = let costs = minCosts [directional, directional, numeric] (Map.map (const 1) directional)
-              in V $ foldr ((+) . getComplexity costs) 0 input
+              in V $ sumOn' (getComplexity costs) input
 
 part2 :: Solution
 part2 input = let costs = minCosts (replicate 25 directional ++ [numeric]) (Map.map (const 1) directional)
-              in V $ foldr ((+) . getComplexity costs) 0 input
+              in V $ sumOn' (getComplexity costs) input

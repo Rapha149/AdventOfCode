@@ -3,6 +3,7 @@ module Year2024.Day20 (part1, part2) where
 import Util
 import Data.Char
 import Data.List
+import Data.List.Extra
 import Data.Maybe
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -14,7 +15,7 @@ getPath obstacles prev cur end | cur == end = [cur]
 
 getCheats :: Int -> Int -> [(Int, Vec)] -> Int
 getCheats _ _ [] = 0
-getCheats maxDistance minDiff ((i, p):ps) = foldr ((+) . fromEnum . isCheat) 0 ps + getCheats maxDistance minDiff ps
+getCheats maxDistance minDiff ((i, p):ps) = sumOn' (fromEnum . isCheat) ps + getCheats maxDistance minDiff ps
     where isCheat :: (Int, Vec) -> Bool
           isCheat (j, o) = let distance = uncurry (+) $ onBoth (abs .: (-)) p o
                                diff = j - i - distance
