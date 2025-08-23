@@ -5,7 +5,7 @@ import Data.Bifunctor
 import Data.List
 import Data.List.Split
 
-parseInput :: ((Int, Int) -> Int) -> [String] -> [((Int, Int), (Int, Int))]
+parseInput :: (Vec -> Int) -> [String] -> [(Vec, Vec)]
 parseInput fSort = map (tuple . sortOn fSort . map (tuple . map read . splitOn "-") . splitOn ",")
 
 part1 :: Solution
