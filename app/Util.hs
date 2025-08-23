@@ -1,9 +1,24 @@
 module Util where
 
+import Data.Char
+
 data Result = V Int | Msg String | Error String
 type Solution = [String] -> Result
 
 type Vec = (Int, Int)
+
+getExtra :: (String -> Bool) -> Int -> ([String] -> a) -> a -> [String] -> (a, [String])
+getExtra test n get def input | test $ hd input = (get $ take n input, drop n input)
+                              | otherwise = (def, input)
+
+getExtraInts :: Int -> ([String] -> a) -> a -> [String] -> (a, [String])
+getExtraInts = getExtra (all isDigit)
+
+getExtra1 :: (String -> Bool) -> (String -> a) -> a -> [String] -> (a, [String])
+getExtra1 test get = getExtra test 1 (get . hd)
+
+getExtraInt :: Int -> [String] -> (Int, [String])
+getExtraInt = getExtra1 (all isDigit) read
 
 hd :: [a] -> a
 hd (x:_) = x

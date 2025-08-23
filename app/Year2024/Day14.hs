@@ -35,9 +35,7 @@ stateToString (i, robots) = show i <> ":\n" <> grid 0 0
           grid x y = (if (x, y) `elem` robots then '#' else '.') : grid (x + 1) y
 
 part1 :: Solution
-part1 rawInput = let custom = hd rawInput == "custom"
-                     (width, height) = if custom then tuple $ map read $ words $ rawInput !! 1 else (101, 103)
-                     input = (if custom then drop 2 else id) rawInput
+part1 rawInput = let ((width, height), input) = getExtraInts 2 (tuple . map read) (101, 103) rawInput
                      robots = map (tuple . map (tuple . map read . splitOn "," . drop 2) . words) input
                      moved = map (fst . foldr (.) id (replicate 100 (move width height))) robots
                  in V $ product $ map length $ group $ sort $ filter (/= Nothing) $ map (getQuadrant (width `div` 2) (height `div` 2)) moved

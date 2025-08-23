@@ -49,8 +49,7 @@ part1 input = let instructions = hd input
               in V $ countSteps network instructions [] "AAA"
 
 part2 :: Solution
-part2 rawInput = let loops = hd rawInput == "loops"
-                     input = (if loops then drop 1 else id) rawInput
+part2 rawInput = let (loops, input) = getExtra1 (== "loops") (const True) False rawInput
                      instructions = hd input
                      network = Map.fromList $ map (parseLine . words) $ drop 2 input
                      startNodes = filter ((== 'A') . (!! 2)) $ Map.keys network

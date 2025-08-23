@@ -1,7 +1,6 @@
 module Year2024.Day20 (part1, part2) where
 
 import Util
-import Data.Char
 import Data.List
 import Data.List.Extra
 import Data.Maybe
@@ -23,7 +22,7 @@ getCheats maxDistance minDiff ((i, p):ps) = sumOn' (fromEnum . isCheat) ps + get
 
 getResult :: Int -> [String] -> Int
 getResult maxDistance rawInput = getCheats maxDistance minDiff $ zip [0..] $ getPath obstacles (-1, -1) start end
-    where (minDiff, input) = if all isDigit $ hd rawInput then (read $ hd rawInput, tl rawInput) else (100, rawInput)
+    where (minDiff, input) = getExtraInt 100 rawInput
           grid = [((r, c), x) | (r, row) <- zip [0..] input, (c, x) <- zip [0..] row]
           obstacles = Set.fromList $ map fst $ filter ((== '#') . snd) grid
           (start, end) = tuple $ map (\c -> fst $ fromJust $ find ((== c) . snd) grid) "SE"
