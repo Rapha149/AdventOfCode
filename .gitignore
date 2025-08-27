@@ -26,8 +26,4 @@ cabal.project.local~
 *-swp
 .directory
 /inputs
-/.yeartemplate
-/cbl
-/addyear
-/puzzle
 .env

@@ -10,7 +10,7 @@ homepage:           https://github.com/Rapha149/AdventOfCode
 build-type:         Simple
 
 common warnings
-    ghc-options: -Wall
+    ghc-options: -Wall -dynamic
 
 executable advent-of-code
     import:           warnings
