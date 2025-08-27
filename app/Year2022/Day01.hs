@@ -2,11 +2,11 @@ module Year2022.Day01 (part1, part2) where
 
 import Util
 import Data.List
-import Data.List.Split
+import Data.List.Extra
 import Data.Ord
 
 part1 :: Solution
-part1 = V . maximum . map (foldr ((+) . read) 0) . splitOn [""]
+part1 = V . maximum . map (sumOn' read) . splitOn [""]
 
 part2 :: Solution
-part2 = V . sum . take 3 . sortOn Down . map (foldr ((+) . read) 0) . splitOn [""]
+part2 = V . sum . take 3 . sortOn Down . map (sumOn' read) . splitOn [""]

@@ -25,6 +25,7 @@ part1 rawInput = let ((areaMin, areaMax), input) = getExtraInts 2 (tuple . map r
                      pairs = [(s1, s2) | (s1:xs) <- tails stones, s2 <- xs]
                  in V $ length $ filter (isIntersecting areaMin areaMax) pairs
 
+
 toList :: (Double, Double, Double) -> [Double]
 toList (a, b, c) = [a, b, c]
 

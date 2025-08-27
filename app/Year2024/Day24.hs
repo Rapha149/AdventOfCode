@@ -66,7 +66,7 @@ fix bits gates wires n | n > bits = []
 part1 :: Solution
 part1 input = let (wires, gates) = parseInput input
                   zValues = map (getResult wires gates) $ filter ((== 'z') . hd) $ Map.keys gates
-              in V $ foldr (\i acc -> acc * 2 + i) 0 zValues
+              in V $ foldr (\i acc -> i + acc * 2) 0 zValues
 
 part2 :: Solution
 part2 input = let (_, gates) = parseInput input

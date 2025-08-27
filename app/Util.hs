@@ -24,19 +24,35 @@ hd :: [a] -> a
 hd (x:_) = x
 hd [] = error "hd: empty list"
 
+hdOr :: a -> [a] -> a
+hdOr a [] = a
+hdOr _ xs = hd xs
+
 tl :: [a] -> [a]
 tl (_:xs) = xs
 tl [] = error "tl: empty list"
+
+tlOr :: [a] -> [a] -> [a]
+tlOr a [] = a
+tlOr _ xs = tl xs
 
 lst :: [a] -> a
 lst [x] = x
 lst (_:xs) = lst xs
 lst [] = error "lst: empty list"
 
+lstOr :: a -> [a] -> a
+lstOr a [] = a
+lstOr _ xs = lst xs
+
 ini :: [a] -> [a]
 ini [_] = []
 ini (x:xs) = x : ini xs
 ini [] = error "ini: empty list"
+
+iniOr :: [a] -> [a] -> [a]
+iniOr a [] = a
+iniOr _ xs = ini xs
 
 tuple :: [a] -> (a, a)
 tuple [a, b] = (a, b)
@@ -63,6 +79,9 @@ inBounds0 maxA maxB = inBounds (0, 0) (maxA, maxB)
 
 inBoundsBoth :: Ord a => a -> a -> (a, a) -> Bool
 inBoundsBoth minA maxA = inBounds (minA, minA) (maxA, maxA)
+
+inBoundsI :: Ord a => (a, a) -> (a, a) -> (a, a) -> Bool
+inBoundsI (minA, minB) (maxA, maxB) (a, b) = a >= minA && a <= maxA && b >= minB && b <= maxB
 
 (.:) :: (c -> d) -> (a -> b -> c) -> a -> b -> d
 (.:) = (.) . (.)
