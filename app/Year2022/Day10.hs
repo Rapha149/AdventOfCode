@@ -16,7 +16,7 @@ part1 = V . sumOn' (uncurry (*)) . filter (\(n, _) -> (n - 20) `mod` 40 == 0) . 
 
 draw :: Int -> Map Int Int -> String
 draw n sprites | Map.notMember n sprites = ""
-               | otherwise = (if pixel == 0 then ('\n':) else id) (if abs (sprite - pixel) <= 1 then "#" else ".") ++ draw (n + 1) sprites
+               | otherwise = (if pixel == 0 then ('\n':) else id) (if abs (sprite - pixel) <= 1 then "#" else " ") ++ draw (n + 1) sprites
     where pixel = (n - 1) `mod` 40
           sprite = sprites Map.! n
 

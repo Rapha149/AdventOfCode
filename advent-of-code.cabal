@@ -126,6 +126,7 @@ executable advent-of-code
 
     build-depends:
         base,
+        bimap,
         bytestring,
         Clipboard,
         containers >=0.7,
