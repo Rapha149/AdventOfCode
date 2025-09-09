@@ -29,8 +29,11 @@ parseInput input = foldr (uncurry setType) (0, 0, 0) pods
 hallSpots :: [Int]
 hallSpots = [0, 1, 3, 5, 7, 9, 10]
 
-roomIdx :: Int -> Int
-roomIdx r = (r + 1) * 2
+roomIndex :: Int -> Int
+roomIndex = (*2) . (+1)
+
+roomBitIndex :: Int -> Int
+roomBitIndex = (+11) . (*4)
 
 organized :: Int -> State
 organized depth = foldr (uncurry setType) (0, 0, 0) [(11 + r * 4 + d, r) | r <- [0..3], d <- [0.. depth]]
@@ -64,16 +67,16 @@ getMinEnergy maxDepth seen queue | PQ.null queue = error "No solution found."
                           state' = clearType i state
                       in (if i <= 10 then getNextHall else getNextRoom) i t state'
           getNextHall :: Int -> Int -> State -> [(Int, State)]
-          getNextHall hIdx t state'@(occ', _, _) = [(10 ^ t * (abs (hIdx - rIdx) + depth + 1), setType (t * 4 + 11 + depth) t state') |
-                                                       let rIdx = roomIdx t, occ' .&. betweenHall hIdx rIdx == 0, -- way is clear
+          getNextHall hIdx t state'@(occ', _, _) = [(10 ^ t * (abs (hIdx - rIdx) + depth + 1), setType (roomBitIndex t + depth) t state') |
+                                                       let rIdx = roomIndex t, occ' .&. betweenHall hIdx rIdx == 0, -- way is clear
                                                        isClean t,
-                                                       let depth = fromJust $ find (not . testBit occ . (t * 4 + 11 +)) $ reverse [0..maxDepth]]
+                                                       let depth = fromJust $ find (not . testBit occ . (roomBitIndex t +)) $ reverse [0..maxDepth]]
           getNextRoom :: Int -> Int -> State -> [(Int, State)]
           getNextRoom i t state'@(_, _, _) = [(10 ^ t * (abs (hIdx - rIdx) + depth + 1), setType hIdx t state') |
                                                  let room = (i - 11) `div` 4, let depth = (i - 11) `mod` 4,
-                                                 occ .&. foldl setBit 0 [room * 4 + 11 .. i - 1] == 0, -- above in room is free
+                                                 occ .&. foldl setBit 0 [roomBitIndex room .. i - 1] == 0, -- above in room is free
                                                  not $ isClean room,
-                                                 let rIdx = roomIdx room, hIdx <- hallSpots,
+                                                 let rIdx = roomIndex room, hIdx <- hallSpots,
                                                  occ .&. betweenHall hIdx rIdx == 0]
 
 part1 :: Solution
