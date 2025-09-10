@@ -136,12 +136,15 @@ executable advent-of-code
         fingertree,
         hex,
         hmatrix,
+        html-conduit,
         http-client,
         http-conduit,
         http-types,
+        regex-compat,
         regex-tdfa,
         simple-vec3,
         split,
+        tagsoup,
         text,
         time
 
