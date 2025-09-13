@@ -31,7 +31,7 @@ difference r1@((x1, x2), (y1, y2), (z1, z2)) r2 | isEmpty i = [r1]
 
 parseInput :: [String] -> [(Bool, Region)]
 parseInput [] = []
-parseInput (l:ls) = (hd ws == "on", triple $ map (tuple . map read . splitOn ".." . drop 2) $ splitOn "," $ lst ws) : parseInput ls
+parseInput (l:ls) = (hd ws == "on", triple $ map (pair . map read . splitOn ".." . drop 2) $ splitOn "," $ lst ws) : parseInput ls
     where ws = words l
 
 doSteps :: [Region] -> [(Bool, Region)] -> [Region]

@@ -15,7 +15,7 @@ type Nodes = Map Node (Bool, [Node])
 parseInput :: [String] -> Nodes
 parseInput [] = Map.empty
 parseInput (l:ls) = ins n1 n2 g1 $ ins n2 n1 g2 $ parseInput ls
-    where (n1, n2) = tuple $ splitOn "-" l
+    where (n1, n2) = pair $ splitOn "-" l
           (g1, g2) = both (isUpper . hd) (n1, n2)
           ins :: Node -> Node -> Bool -> Nodes -> Nodes
           ins node adj large = Map.alter (Just . maybe (large, [adj]) (second (adj:))) node

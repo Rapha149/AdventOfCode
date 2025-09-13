@@ -14,9 +14,9 @@ import Text.Printf
 data Gate = G { in1 :: String, in2 :: String, op :: Int -> Int -> Int }
 
 parseInput :: [String] -> (Map String Int, Map String Gate)
-parseInput input = (Map.fromList $ map (second read . tuple . splitOn ": ") wireInput,
+parseInput input = (Map.fromList $ map (second read . pair . splitOn ": ") wireInput,
                     Map.fromList $ map (parseGate . words) gateInput)
-    where (wireInput, gateInput) = tuple $ splitOn [""] input
+    where (wireInput, gateInput) = pair $ splitOn [""] input
           parseGate :: [String] -> (String, Gate)
           parseGate [in1, op, in2, _, out] = (out, G { op = case op of
                                                                  "AND" -> (.&.)

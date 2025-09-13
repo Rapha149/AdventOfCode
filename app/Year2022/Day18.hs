@@ -6,8 +6,6 @@ import Data.Tuple.Extra
 import Data.Set (Set)
 import qualified Data.Set as Set
 
-type Vec3 = (Int, Int, Int)
-
 getSurface :: Set Vec3 -> Vec3 -> Int
 getSurface cubes cube = sum [1 | f <- [first3, second3, third3], d <- [-1, 1], f (+d) cube `Set.notMember` cubes]
 

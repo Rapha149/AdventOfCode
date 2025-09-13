@@ -39,7 +39,7 @@ minCut edges nodes members best bestWeight = minCut edges' nodes' members' best'
 
 lineToEdges :: String -> Edges
 lineToEdges line = Map.fromList $ (a, Map.fromList $ map (, 1) bs) : map (, Map.singleton a 1) bs
-    where (a, bs) = second (splitOn " ") $ tuple $ splitOn ": " line
+    where (a, bs) = second (splitOn " ") $ pair $ splitOn ": " line
 
 part1 :: Solution
 part1 input = let edges = foldr (Map.unionWith Map.union . lineToEdges) Map.empty input

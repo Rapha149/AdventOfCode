@@ -35,7 +35,7 @@ compareHands b (h1, t1, _ ) (h2, t2, _) | t1 /= t2 = compare t1 t2
           compareCards _ _ = error "Invalid number of cards."
 
 getWinnings :: Bool -> [String] -> Int
-getWinnings b input = let hands = map ((\(hand, bid) -> (hand, getHandType b hand, read bid :: Int)) . tuple . words) input
+getWinnings b input = let hands = map ((\(hand, bid) -> (hand, getHandType b hand, read bid :: Int)) . pair . words) input
                       in sum $ zipWith (*) (map (\(_, _, bid) -> bid) $ sortBy (compareHands b) hands) [1..]
 
 part1 :: Solution

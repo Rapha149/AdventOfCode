@@ -6,8 +6,8 @@ numberOfWaysToWin :: (Int, Int) -> Int
 numberOfWaysToWin (time, distance) = length $ filter (\i -> (time - i) * i > distance) [1..time - 1]
 
 part1 :: Solution
-part1 = V . product . map numberOfWaysToWin . uncurry zip . tuple . map (map read . drop 1 . words)
+part1 = V . product . map numberOfWaysToWin . uncurry zip . pair . map (map read . drop 1 . words)
 
 part2 :: Solution
-part2 input = let (time, distance) = tuple $ map (read . concat . drop 1 . words) input :: (Int, Int)
+part2 input = let (time, distance) = pair $ map (read . concat . drop 1 . words) input :: (Int, Int)
               in V $ length $ filter (\i -> (time - i) * i > distance) [1..time - 1]

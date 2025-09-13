@@ -57,9 +57,9 @@ getValue Operator {..} = (case typeId of
                                1 -> product
                                2 -> minimum
                                3 -> maximum
-                               5 -> fromEnum . uncurry (>) . tuple
-                               6 -> fromEnum . uncurry (<) . tuple
-                               7 -> fromEnum . uncurry (==) . tuple
+                               5 -> fromEnum . uncurry (>) . pair
+                               6 -> fromEnum . uncurry (<) . pair
+                               7 -> fromEnum . uncurry (==) . pair
                                _ -> error "Invalid type id.") $ map getValue packets
 
 part2 :: Solution

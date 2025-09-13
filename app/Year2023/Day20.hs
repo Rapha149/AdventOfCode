@@ -15,7 +15,7 @@ getOutputs (Conjunction _ out) = out
 
 parseInput :: [String] -> Map String Module
 parseInput input = Map.foldrWithKey (uncurry Map.insert .: toModule) Map.empty outputs
-    where outputs = Map.fromList $ map (second (splitOn ", ") . tuple . splitOn " -> ") input
+    where outputs = Map.fromList $ map (second (splitOn ", ") . pair . splitOn " -> ") input
           toModule :: String -> [String] -> (String, Module)
           toModule "broadcaster" out = ("broadcaster", Broadcaster out)
           toModule ('%':name) out = (name, FlipFlop False out)

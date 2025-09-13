@@ -12,7 +12,7 @@ move order stacks (n, s, t) = Map.adjust (drop n) s $ Map.adjust (order (take n 
 
 getResult :: ([Char] -> [Char]) -> [String] -> String
 getResult order input = map hd $ Map.elems $ foldl (move order) stacks moves
-    where (stackInput, moveInput) = tuple $ splitOn [""] input
+    where (stackInput, moveInput) = pair $ splitOn [""] input
           stacks = Map.fromList $ zip [1..] [ini $ dropWhile isSpace x | (i, x) <- zip [0 :: Int ..] $ transpose stackInput, i `mod` 4 == 1]
           moves = map (\m -> triple $ [read x | (i, x) <- zip [0 :: Int ..] $ words m, odd i]) moveInput
 

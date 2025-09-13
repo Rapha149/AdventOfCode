@@ -15,7 +15,7 @@ isPossible operators (target, numbers) = any ((== target) . calc . zip (reverse 
           calc ((x, op):xs) = x `op` calc xs
 
 sumPossible :: [Operator] -> [String] -> Int
-sumPossible operators = sum . map fst . filter (isPossible operators) . map (bimap read (map read . words) . tuple . splitOn ":")
+sumPossible operators = sum . map fst . filter (isPossible operators) . map (bimap read (map read . words) . pair . splitOn ":")
 
 part1 :: Solution
 part1 = V . sumPossible [(+), (*)]

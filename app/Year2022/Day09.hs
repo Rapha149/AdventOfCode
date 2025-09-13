@@ -5,7 +5,7 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 
 parseInput :: [String] -> [Vec]
-parseInput = concatMap ((\(d, n) -> replicate (read n) $ dir d) . tuple . words)
+parseInput = concatMap ((\(d, n) -> replicate (read n) $ dir d) . pair . words)
     where dir :: String -> Vec
           dir "R" = (1, 0)
           dir "L" = (-1, 0)

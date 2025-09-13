@@ -9,7 +9,7 @@ import qualified Data.Set as Set
 
 parseInput :: [String] -> ([String], Set (String, String))
 parseInput input = (Set.toList $ Set.map fst connections, connections)
-    where connections = Set.fromList $ concatMap ((\x -> [x, swap x]) . tuple . splitOn "-") input
+    where connections = Set.fromList $ concatMap ((\x -> [x, swap x]) . pair . splitOn "-") input
 
 part1 :: Solution
 part1 input = let (computers, connections) = parseInput input

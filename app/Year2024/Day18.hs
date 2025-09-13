@@ -10,8 +10,8 @@ import qualified Data.Set as Set
 parseInput :: [String] -> ([Vec], Set Vec, Int, Int)
 parseInput input = (bytes, points, size, count)
     where custom = ',' `notElem` hd input
-          (size, count) = if custom then tuple $ map read $ words $ hd input else (70, 1024)
-          bytes = map (tuple . map read . splitOn ",") $ (if custom then tl else id) input
+          (size, count) = if custom then pair $ map read $ words $ hd input else (70, 1024)
+          bytes = map (pair . map read . splitOn ",") $ (if custom then tl else id) input
           points = Set.fromList [(x, y) | x <- [0..size], y <- [0..size]]
 
 bfs :: Int -> Set Vec -> [[Vec]] -> Maybe [Vec]

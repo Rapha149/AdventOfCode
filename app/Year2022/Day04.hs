@@ -6,7 +6,7 @@ import Data.List
 import Data.List.Split
 
 parseInput :: (Vec -> Int) -> [String] -> [(Vec, Vec)]
-parseInput fSort = map (tuple . sortOn fSort . map (tuple . map read . splitOn "-") . splitOn ",")
+parseInput fSort = map (pair . sortOn fSort . map (pair . map read . splitOn "-") . splitOn ",")
 
 part1 :: Solution
 part1 = V . length . filter (\((a, b), (c, d)) -> a >= c && b <= d) . parseInput (uncurry subtract)

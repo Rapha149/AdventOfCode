@@ -25,7 +25,7 @@ getResult maxDistance rawInput = getCheats maxDistance minDiff $ zip [0..] $ get
     where (minDiff, input) = getExtraInt 100 rawInput
           grid = [((r, c), x) | (r, row) <- zip [0..] input, (c, x) <- zip [0..] row]
           obstacles = Set.fromList $ map fst $ filter ((== '#') . snd) grid
-          (start, end) = tuple $ map (\c -> fst $ fromJust $ find ((== c) . snd) grid) "SE"
+          (start, end) = pair $ map (\c -> fst $ fromJust $ find ((== c) . snd) grid) "SE"
 
 part1 :: Solution
 part1 = V . getResult 2

@@ -12,7 +12,7 @@ type Program = [Int]
 parseInput :: [String] -> (Registers, Program)
 parseInput input = (uncurry3 R $ triple $ map (read . drop 12) reg,
                     map read $ splitOn "," $ drop 9 $ hd prog)
-    where (reg, prog) = tuple $ splitOn [""] input
+    where (reg, prog) = pair $ splitOn [""] input
 
 runProgram :: Program -> Registers -> Int -> [Int]
 runProgram program registers pointer | pointer >= length program = []

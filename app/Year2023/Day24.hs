@@ -16,12 +16,12 @@ isIntersecting :: Double -> Double -> (Stone2, Stone2) -> Bool
 isIntersecting areaMin areaMax (((px1, py1), (vx1, vy1)), ((px2, py2), (vx2, vy2))) | isNothing result || a < 0 || b < 0 = False
                                                                                     | otherwise = inBoundsBoth areaMin areaMax point
     where result = LA.linearSolve ((2 LA.>< 2) [vx1, -vx2, vy1, -vy2]) ((2 LA.>< 1) [px2 - px1, py2 - py1])
-          (a, b) = tuple $ concat $ LA.toLists $ fromJust result
+          (a, b) = pair $ concat $ LA.toLists $ fromJust result
           point = onBoth (+) (px1, py1) $ both (*a) (vx1, vy1)
 
 part1 :: Solution
-part1 rawInput = let ((areaMin, areaMax), input) = getExtraInts 2 (tuple . map read) (200000000000000, 400000000000000) rawInput
-                     stones = map (tuple . map (tuple . take 2 . map read . splitOn ", ") . splitOn " @ ") input
+part1 rawInput = let ((areaMin, areaMax), input) = getExtraInts 2 (pair . map read) (200000000000000, 400000000000000) rawInput
+                     stones = map (pair . map (pair . take 2 . map read . splitOn ", ") . splitOn " @ ") input
                      pairs = [(s1, s2) | (s1:xs) <- tails stones, s2 <- xs]
                  in V $ length $ filter (isIntersecting areaMin areaMax) pairs
 
@@ -30,7 +30,7 @@ toList :: (Double, Double, Double) -> [Double]
 toList (a, b, c) = [a, b, c]
 
 part2 :: Solution
-part2 input = let stones = map (tuple . map (triple . map read . splitOn ", ") . splitOn " @ ") input
+part2 input = let stones = map (pair . map (triple . map read . splitOn ", ") . splitOn " @ ") input
                   (p0, v0) = hd stones -- use first stone as reference
                   shifted = map (bimap (<-> p0) (<-> v0)) stones -- shift all stones relative to the first
                   n1 = uncurry (><) $ shifted !! 1 -- plane between origin (first stone) and second stone

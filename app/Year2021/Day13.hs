@@ -8,8 +8,8 @@ import qualified Data.Set as Set
 
 parseInput :: [String] -> (Set Vec, [Vec])
 parseInput input = (dots, folds)
-    where (inputDots, inputFolds) = tuple $ splitOn [""] input
-          dots = Set.fromList $ map (tuple . map read . splitOn ",") inputDots
+    where (inputDots, inputFolds) = pair $ splitOn [""] input
+          dots = Set.fromList $ map (pair . map read . splitOn ",") inputDots
           folds = map (parseFold . (!! 2) . words) inputFolds
           parseFold :: String -> Vec
           parseFold ('y':'=':y) = (0, read y)

@@ -35,12 +35,12 @@ stateToString (i, robots) = show i <> ":\n" <> grid 0 0
           grid x y = (if (x, y) `elem` robots then '#' else '.') : grid (x + 1) y
 
 part1 :: Solution
-part1 rawInput = let ((width, height), input) = getExtraInts 2 (tuple . map read) (101, 103) rawInput
-                     robots = map (tuple . map (tuple . map read . splitOn "," . drop 2) . words) input
+part1 rawInput = let ((width, height), input) = getExtraInts 2 (pair . map read) (101, 103) rawInput
+                     robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) input
                      moved = map (fst . foldr (.) id (replicate 100 (move width height))) robots
                  in V $ product $ map length $ group $ sort $ filter (/= Nothing) $ map (getQuadrant (width `div` 2) (height `div` 2)) moved
 
 part2 :: Solution
 part2 input = let limit = read $ hd input :: Int
-                  robots = map (tuple . map (tuple . map read . splitOn "," . drop 2) . words) $ drop 1 input
+                  robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) $ drop 1 input
               in Msg $ stateToString $ minimumOn (getAvgDistance . snd) $ getNStates 101 103 limit 0 robots

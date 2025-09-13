@@ -13,7 +13,7 @@ parseInput input = (obstacles, maximum $ map snd $ Set.toList obstacles)
           parsePath [] = error "Empty path."
           parsePath [_] = Set.empty
           parsePath ((x1,y1):(x2,y2):ps) = foldr Set.insert (parsePath ((x2,y2):ps)) [(x, y) | x <- [min x1 x2 .. max x1 x2], y <- [min y1 y2 .. max y1 y2]]
-          obstacles = foldr (Set.union . parsePath . map (tuple . map read . splitOn ",") . splitOn " -> ") Set.empty input
+          obstacles = foldr (Set.union . parsePath . map (pair . map read . splitOn ",") . splitOn " -> ") Set.empty input
 
 countUntilAbyss :: Set Vec -> Int -> Int
 countUntilAbyss obstacles maxY = case fall (500, 0) of

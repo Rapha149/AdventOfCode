@@ -46,7 +46,7 @@ parseLayout numbers patterns idx layout | all ((== 1) . popCount) $ Map.elems la
 
 getOutputValue :: String -> Int
 getOutputValue line = read $ map (intToDigit . getValue) outDigits
-    where (patterns, outDigits) = tuple $ map words $ splitOn " | " line
+    where (patterns, outDigits) = pair $ map words $ splitOn " | " line
           layout = parseLayout [0..9] patterns 0 (Map.fromList $ map (, 0b1111111) ['a'..'g'])
           getValue :: String -> Int
           getValue digit = segments BM.!> Map.foldr (+) 0 (Map.restrictKeys layout $ Set.fromList digit)

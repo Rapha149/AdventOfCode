@@ -6,8 +6,8 @@ import Data.Tuple.Extra
 
 getStartVelocities :: [String] -> [Vec]
 getStartVelocities input = [(x, y) | x <- [min 0 fartherX .. max 0 fartherX], y <- [fartherY .. abs fartherY * 2], hits (0, 0) (x, y)]
-    where (xs, ys) = tuple $ map (map read . splitOn ".." . drop 2) $ splitOn ", " $ drop 13 $ hd input
-          ((minX, maxX), (minY, maxY)) = both tuple (xs, ys)
+    where (xs, ys) = pair $ map (map read . splitOn ".." . drop 2) $ splitOn ", " $ drop 13 $ hd input
+          ((minX, maxX), (minY, maxY)) = both pair (xs, ys)
           (fartherX, fartherY) = both (maximumOn abs) (xs, ys)
           hits :: Vec -> Vec -> Bool
           hits (x, y) (vx, vy) | vy < 0 && y < minY = False

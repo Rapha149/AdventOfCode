@@ -73,10 +73,10 @@ sumCoordinates :: Obstacles -> Int
 sumCoordinates = Map.foldrWithKey (\(r, c) b -> (+) $ if b then r * 100 + c else 0) 0
 
 part1 :: Solution
-part1 input = let ((obstacles, start), moves) = bimap parseMap (parseMoves . concat) $ tuple $ splitOn [""] input
+part1 input = let ((obstacles, start), moves) = bimap parseMap (parseMoves . concat) $ pair $ splitOn [""] input
               in V $ sumCoordinates $ moveRobot obstacles start moves
 
 part2 :: Solution
-part2 input = let ((obstacles, start), moves) = bimap parseMap (parseMoves . concat) $ tuple $ splitOn [""] input
+part2 input = let ((obstacles, start), moves) = bimap parseMap (parseMoves . concat) $ pair $ splitOn [""] input
                   wideObstacles = Map.mapKeys (second (*2)) obstacles
               in V $ sumCoordinates $ moveRobotWide wideObstacles (second (*2) start) moves

@@ -13,7 +13,7 @@ import qualified Data.Map.Strict as Map
 data Monkey = N Int | O String String Char
 
 parseInput :: [String] -> Map String Monkey
-parseInput input = Map.fromList $ map (second (parseMonkey . words) . tuple . splitOn ": ") input
+parseInput input = Map.fromList $ map (second (parseMonkey . words) . pair . splitOn ": ") input
     where parseMonkey :: [String] -> Monkey
           parseMonkey [d] = N $ read d
           parseMonkey [m1, op, m2] = O m1 m2 $ hd op

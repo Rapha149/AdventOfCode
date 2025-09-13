@@ -22,7 +22,7 @@ movesToArea moves = shoelace corners + sum (map snd moves) `div` 2 + 1
     where corners = getCorners moves
 
 part1 :: Solution
-part1 = V . movesToArea . map (bimap hd read . tuple . take 2 . words)
+part1 = V . movesToArea . map (bimap hd read . pair . take 2 . words)
 
 part2 :: Solution
 part2 = V . movesToArea . map ((\(hex, dir) -> ("RDLU" !! read dir, fst $ hd $ readHex hex)) . splitAt 5 . take 6 . drop 2 . (!! 2) . words)

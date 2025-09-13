@@ -6,6 +6,7 @@ data Result = V Int | Msg String | Error String
 type Solution = [String] -> Result
 
 type Vec = (Int, Int)
+type Vec3 = (Int, Int, Int)
 
 getExtra :: (String -> Bool) -> Int -> ([String] -> a) -> a -> [String] -> (a, [String])
 getExtra test n get def input | test $ hd input = (get $ take n input, drop n input)
@@ -54,9 +55,9 @@ iniOr :: [a] -> [a] -> [a]
 iniOr a [] = a
 iniOr _ xs = ini xs
 
-tuple :: [a] -> (a, a)
-tuple [a, b] = (a, b)
-tuple _ = error "Not two elements."
+pair :: [a] -> (a, a)
+pair [a, b] = (a, b)
+pair _ = error "Not two elements."
 
 triple :: [a] -> (a, a, a)
 triple [a, b, c] = (a, b, c)

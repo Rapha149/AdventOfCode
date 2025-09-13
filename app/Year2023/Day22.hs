@@ -8,12 +8,10 @@ import qualified Data.Set as Set
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
-type Vec3 = (Int, Int, Int)
-
 parseInput :: [String] -> [[Vec3]]
 parseInput [] = []
 parseInput (l:ls) = [(x, y, z) | x <- [min x1 x2..max x1 x2], y <- [min y1 y2..max y1 y2], z <- [min z1 z2..max z1 z2]] : parseInput ls
-    where ((x1, y1, z1), (x2, y2, z2)) = tuple $ map (triple . map read . splitOn ",") $ splitOn "~" l
+    where ((x1, y1, z1), (x2, y2, z2)) = pair $ map (triple . map read . splitOn ",") $ splitOn "~" l
 
 fallDown :: Map Vec3 Int -> [Vec3] -> (Bool, [Vec3])
 fallDown bricks cs | any ((== 0) . thd3) cs' = (True, cs)

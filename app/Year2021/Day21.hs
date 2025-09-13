@@ -9,7 +9,7 @@ type Player = (Int, Int)
 type State = (Bool, (Player, Player))
 
 parseInput :: [String] -> (Player, Player)
-parseInput = tuple . map ((, 0) . subtract 1 . read . lst . words)
+parseInput = pair . map ((, 0) . subtract 1 . read . lst . words)
 
 play1 :: Int -> Player -> Player -> Int
 play1 rolls (pos, points) p2 | points' >= 1000 = snd p2 * rolls'

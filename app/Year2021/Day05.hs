@@ -6,7 +6,7 @@ import Data.Tuple.Extra
 import qualified Data.Map.Strict as Map
 
 parseInput :: [String] -> [(Vec, Vec)]
-parseInput = map (both (tuple . map read . splitOn ",") . (\xs -> (hd xs, lst xs)) . words)
+parseInput = map (both (pair . map read . splitOn ",") . (\xs -> (hd xs, lst xs)) . words)
 
 getStraightLines :: [(Vec, Vec)] -> [Vec]
 getStraightLines ls = [(x, y) | ((x1, y1), (x2, y2)) <- ls, x1 == x2 || y1 == y2, x <- [min x1 x2..max x1 x2], y <- [min y1 y2..max y1 y2]]

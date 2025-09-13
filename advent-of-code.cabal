@@ -166,13 +166,15 @@ executable advent-of-code
         http-client,
         http-conduit,
         http-types,
+        monad-loops,
         regex-compat,
         regex-tdfa,
         simple-vec3,
         split,
         tagsoup,
         text,
-        time
+        time,
+        vector
 
     hs-source-dirs:   app
     default-language: GHC2024

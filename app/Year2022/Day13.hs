@@ -31,7 +31,7 @@ cmpLists (x:xs) (y:ys) = case cmp x y of
                               o -> o
 
 part1 :: Solution
-part1 = V . sumOn' fst . filter ((== LT) . uncurry cmp . tuple . map parse . snd) . zip [1..] . splitOn [""]
+part1 = V . sumOn' fst . filter ((== LT) . uncurry cmp . pair . map parse . snd) . zip [1..] . splitOn [""]
 
 part2 :: Solution
 part2 input = let dividers = [List [List [Num 2]], List [List [Num 6]]]
