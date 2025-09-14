@@ -1,7 +1,6 @@
 module Year2022.Day13 (part1, part2) where
 
 import Util
-import Data.List
 import Data.List.Extra
 
 data Element = List [Element] | Num Int deriving Eq
@@ -31,7 +30,7 @@ cmpLists (x:xs) (y:ys) = case cmp x y of
                               o -> o
 
 part1 :: Solution
-part1 = V . sumOn' fst . filter ((== LT) . uncurry cmp . pair . map parse . snd) . zip [1..] . splitOn [""]
+part1 = V . sumOn' fst . filter ((== LT) . uncurry cmp . pair . map parse . snd) . zip [1..] . split null
 
 part2 :: Solution
 part2 input = let dividers = [List [List [Num 2]], List [List [Num 6]]]

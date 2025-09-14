@@ -1,14 +1,14 @@
 module Year2021.Day13 (part1, part2) where
 
 import Util
+import Data.List.Extra
 import Data.Tuple.Extra
-import Data.List.Split
 import Data.Set (Set)
 import qualified Data.Set as Set
 
 parseInput :: [String] -> (Set Vec, [Vec])
 parseInput input = (dots, folds)
-    where (inputDots, inputFolds) = pair $ splitOn [""] input
+    where (inputDots, inputFolds) = pair $ split null input
           dots = Set.fromList $ map (pair . map read . splitOn ",") inputDots
           folds = map (parseFold . (!! 2) . words) inputFolds
           parseFold :: String -> Vec

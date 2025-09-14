@@ -2,8 +2,7 @@ module Year2021.Day19 (part1, part2) where
 
 import Prelude hiding ((<>))
 import Util
-import Data.List
-import Data.List.Split
+import Data.List.Extra
 import Data.Maybe
 import Data.Tuple.Extra
 import qualified Data.Foldable as F
@@ -65,7 +64,7 @@ determineLocations scanners overlaps unprocessed beacons | Set.null unprocessed 
 
 inputToLocations :: [String] -> (Seq Scanner, Set (Vector Double))
 inputToLocations input = determineLocations (s0 Seq.<| Seq.fromList (tl scanners)) overlaps (Set.fromList [1..length scanners - 1]) (Set.fromList s0.beacons)
-    where scanners = map (parseScanner . tl ) $ splitOn [""] input
+    where scanners = map (parseScanner . tl ) $ split null input
           overlaps = overlapping scanners
           s0 = (hd scanners) { location = vector [0, 0, 0], rotation = ident 3 }
 

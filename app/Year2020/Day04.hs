@@ -3,14 +3,14 @@ module Year2020.Day04 (part1, part2) where
 import Util
 import Text.Regex.TDFA
 import Data.Char
-import Data.List.Split
+import Data.List.Extra
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
 type Passport = Map String String
 
 parseInput :: [String] -> [Passport]
-parseInput = map parsePassport . splitOn [""]
+parseInput = map parsePassport . split null
     where parsePassport :: [String] -> Passport
           parsePassport = Map.fromList . map (pair . splitOn ":") . words . unwords
 

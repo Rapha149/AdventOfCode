@@ -1,7 +1,7 @@
 module Year2023.Day05 (part1, part2) where
 
 import Util
-import Data.List.Split
+import Data.List.Extra
 
 type Category = [(Int, Int, Int)]
 type Range = (Int, Int)
@@ -46,13 +46,13 @@ mapSeedRanges ((x,y):xs) category = checkCategory category
                                  | otherwise = (x + d, y + d) : mapSeedRanges xs category
 
 part1 :: Solution
-part1 input = let parts = splitOn [""] input
+part1 input = let parts = split null input
                   seeds = map read $ words $ drop 7 $ hd $ hd parts :: [Int]
                   categories = map parseCategory $ drop 1 parts
               in V $ minimum $ map (mapNumber categories) seeds
 
 part2 :: Solution
-part2 input = let parts = splitOn [""] input
+part2 input = let parts = split null input
                   seedRanges = parseSeedRanges $ map read $ words $ drop 7 $ hd $ hd parts
                   categories = map parseCategory $ drop 1 parts
               in V $ minimum $ map fst $ foldl mapSeedRanges seedRanges categories

@@ -2,8 +2,7 @@ module Year2024.Day24 (part1, part2) where
 
 import Util
 import Data.Bits
-import Data.List
-import Data.List.Split
+import Data.List.Extra
 import Data.Tuple.Extra
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
@@ -16,7 +15,7 @@ data Gate = G { in1 :: String, in2 :: String, op :: Int -> Int -> Int }
 parseInput :: [String] -> (Map String Int, Map String Gate)
 parseInput input = (Map.fromList $ map (second read . pair . splitOn ": ") wireInput,
                     Map.fromList $ map (parseGate . words) gateInput)
-    where (wireInput, gateInput) = pair $ splitOn [""] input
+    where (wireInput, gateInput) = pair $ split null input
           parseGate :: [String] -> (String, Gate)
           parseGate [in1, op, in2, _, out] = (out, G { op = case op of
                                                                  "AND" -> (.&.)

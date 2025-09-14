@@ -1,8 +1,7 @@
 module Year2023.Day13 (part1, part2) where
 
 import Util
-import Data.List
-import Data.List.Split
+import Data.List.Extra
 import Data.Maybe
 
 getReflectionRow :: [String] -> [String] -> Maybe Int
@@ -26,7 +25,7 @@ getReflectionNum getReflection rows | isJust row = 100 * fromJust row
           col = getReflection (transpose rows) []
 
 part1 :: Solution
-part1 = V . sum . map (getReflectionNum getReflectionRow) . splitOn [""]
+part1 = V . sum . map (getReflectionNum getReflectionRow) . split null
 
 part2 :: Solution
-part2 = V . sum . map (getReflectionNum getReflectionRowSmudge) . splitOn [""]
+part2 = V . sum . map (getReflectionNum getReflectionRowSmudge) . split null

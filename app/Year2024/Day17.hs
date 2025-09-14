@@ -2,8 +2,7 @@ module Year2024.Day17 (part1, part2) where
 
 import Util
 import Data.Bits
-import Data.List
-import Data.List.Split
+import Data.List.Extra
 import Data.Tuple.Extra
 
 data Registers = R { a :: Int, b :: Int, c :: Int } deriving Show
@@ -12,7 +11,7 @@ type Program = [Int]
 parseInput :: [String] -> (Registers, Program)
 parseInput input = (uncurry3 R $ triple $ map (read . drop 12) reg,
                     map read $ splitOn "," $ drop 9 $ hd prog)
-    where (reg, prog) = pair $ splitOn [""] input
+    where (reg, prog) = pair $ split null input
 
 runProgram :: Program -> Registers -> Int -> [Int]
 runProgram program registers pointer | pointer >= length program = []

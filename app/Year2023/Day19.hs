@@ -1,8 +1,8 @@
 module Year2023.Day19 (part1, part2) where
 
 import Util
-import Data.List.Split
 import Data.Bifunctor
+import Data.List.Extra
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
@@ -57,9 +57,9 @@ getAcceptedCombinations workflows (r, Name name) = sum $ map (getAcceptedCombina
                                                                               (True, False) -> (newRange (a, number - 1), target) : splitRanges (newRange (number, b)) rs
 
 part1 :: Solution
-part1 input = let (workflows, parts) = bimap (Map.fromList . map parseWorkflow) (map parsePart) $ pair $ splitOn [""] input
+part1 input = let (workflows, parts) = bimap (Map.fromList . map parseWorkflow) (map parsePart) $ pair $ split null input
               in V $ sum $ map (Map.foldr (+) 0 . fst) $ filter (isAccepted workflows) $ map (, Name "in") parts
 
 part2 :: Solution
-part2 input = let workflows = Map.fromList $ map parseWorkflow $ hd $ splitOn [""] input
+part2 input = let workflows = Map.fromList $ map parseWorkflow $ hd $ split null input
               in V $ getAcceptedCombinations workflows (Map.fromList $ map (, (1, 4000)) "xmas", Name "in")

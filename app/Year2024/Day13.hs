@@ -2,7 +2,7 @@ module Year2024.Day13 (part1, part2) where
 
 import Util
 import Data.Maybe
-import Data.List.Split
+import Data.List.Extra
 import Data.Tuple.Extra
 import Numeric.LinearAlgebra
 
@@ -18,7 +18,7 @@ getMinTokens resAdd limit (bA, bB, prize) | isNothing result ||
           (a, b) = both round (aD, bD)
 
 part1 :: Solution
-part1 = V . sum . map (getMinTokens 0.0 100 . triple) . splitOn [""]
+part1 = V . sum . map (getMinTokens 0.0 100 . triple) . split null
 
 part2 :: Solution
-part2 = V . sum . map (getMinTokens 10000000000000.0 0 . triple) . splitOn [""]
+part2 = V . sum . map (getMinTokens 10000000000000.0 0 . triple) . split null

@@ -4,7 +4,7 @@ import Util
 import Data.List.Extra
 
 part1 :: Solution
-part1 = V . sumOn' (length . nub . concat) . splitOn [""]
+part1 = V . sumOn' (length . nub . concat) . split null
 
 part2 :: Solution
-part2 = V . sumOn' (length . foldr1 intersect) . splitOn [""]
+part2 = V . sumOn' (length . foldr1 intersect) . split null

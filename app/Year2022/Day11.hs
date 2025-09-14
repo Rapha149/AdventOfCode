@@ -2,8 +2,7 @@ module Year2022.Day11 (part1, part2) where
 
 import Util
 import Data.Ord
-import Data.List
-import Data.List.Split
+import Data.List.Extra
 import Data.Tuple.Extra
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
@@ -13,7 +12,7 @@ type Items = Map Int [Int]
 
 parseInput :: [String] -> ([(Int, Monkey)], Items)
 parseInput input = (zip [0..] $ map parseMonkey monkeys, startItems)
-    where monkeys = splitOn [""] input
+    where monkeys = split null input
           startItems = Map.fromList $ zip [0..] $ map (map read . splitOn ", " . drop 18 . (!! 1)) monkeys
           parseMonkey :: [String] -> Monkey
           parseMonkey ls = let (sym, num) = pair $ drop 4 $ words $ ls !! 2

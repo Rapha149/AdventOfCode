@@ -3,8 +3,7 @@ module Year2021.Day04 (part1, part2) where
 import Util
 import Data.Bits
 import Data.Word
-import Data.List
-import Data.List.Split
+import Data.List.Extra
 import Data.IntMap.Strict (IntMap)
 import qualified Data.IntMap.Strict as IM
 
@@ -13,7 +12,7 @@ data Board = Board { positions :: IntMap Int, marked :: Word32 } deriving Show
 parseInput :: [String] -> ([Int], [Board])
 parseInput input = (numbers, boards)
     where numbers = map read $ splitOn "," $ hd input
-          boards = map parseBoard $ splitOn [""] $ drop 2 input
+          boards = map parseBoard $ split null $ drop 2 input
           parseBoard :: [String] -> Board
           parseBoard board = let positions = IM.fromList [(read x, r * 5 + c) | (r, row) <- zip [0..] board, (c, x) <- zip [0..] $ words row]
                              in Board { positions, marked = 0 }
