@@ -6,6 +6,7 @@ import Control.Monad
 import Control.Monad.ST
 import Control.Monad.Loops
 import Data.STRef
+import Data.Vector.Unboxed.Mutable (MVector)
 import qualified Data.Vector.Unboxed.Mutable as V
 
 getResult :: Int -> [String] -> Int
@@ -19,7 +20,7 @@ getResult goal input = runST $ do
     whileM_ ((/= goal) <$> readSTRef turn) $ speak turn num history
     readSTRef num
 
-speak :: STRef s Int -> STRef s Int -> V.MVector s Int -> ST s ()
+speak :: STRef s Int -> STRef s Int -> MVector s Int -> ST s ()
 speak turn num history = do
     turnVal <- readSTRef turn
     numVal <- readSTRef num
