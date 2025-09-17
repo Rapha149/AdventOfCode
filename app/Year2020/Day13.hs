@@ -7,7 +7,7 @@ import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
 nextMultiple :: Int -> Int -> Int
-nextMultiple a b = ((a + b - 1) `div` b) * b
+nextMultiple a b = (a `divCeil` b) * b
 
 part1 :: Solution
 part1 input = let earliest = read $ hd input

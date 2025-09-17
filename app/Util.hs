@@ -72,6 +72,9 @@ toFst f a = (f a, a)
 toSnd :: (a -> b) -> a -> (a, b)
 toSnd f a = (a, f a)
 
+divCeil :: Integral a => a -> a -> a
+divCeil a b = -((-a) `div` b)
+
 inBounds :: Ord a => (a, a) -> (a, a) -> (a, a) -> Bool
 inBounds (minA, minB) (maxA, maxB) (a, b) = a >= minA && a < maxA && b >= minB && b < maxB
 
