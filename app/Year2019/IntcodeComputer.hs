@@ -1,17 +1,20 @@
-module Year2019.IntcodeComputer (parse, run, runIO) where
+module Year2019.IntcodeComputer (State (..), parseState, parseStateI, run) where
 
 import Util
 import Data.Maybe
 import Data.List.Split
-import Data.Tuple.Extra
 import Data.IntMap.Strict (IntMap)
 import qualified Data.IntMap.Strict as IM
 
 data Instruction = Instruction { params :: [Bool], output :: Output, fun :: [Int] -> Maybe Int }
 data Output = Write | Jump | Output
+data State = State { inputs :: [Int], outputs :: [Int], finished :: Bool, ip :: Int, program :: IntMap Int }
 
-parse :: [String] -> [Int]
-parse = map read . splitOn "," . hd
+parseState :: [String] -> State
+parseState = State [] [] False 0 . IM.fromList . zip [0..] . map read . splitOn "," . hd
+
+parseStateI :: [Int] -> [String] -> State
+parseStateI inputs = (\state -> state { inputs = inputs }) . parseState
 
 instruction :: Int -> Instruction
 instruction 1 = Instruction { params = [False, False], output = Write, fun = Just . uncurry (+) . pair }
@@ -24,30 +27,27 @@ instruction 7 = Instruction { params = [False, False], output = Write, fun = Jus
 instruction 8 = Instruction { params = [False, False], output = Write, fun = Just . fromEnum . uncurry (==) . pair }
 instruction _ = error "Invalid opcode."
 
-run :: [Int] -> [Int]
-run program = IM.elems $ snd $ execute [] 0 $ IM.fromList $ zip [0..] program
-
-runIO :: [Int] -> [Int] -> ([Int], [Int])
-runIO inputs program = second IM.elems $ execute inputs 0 $ IM.fromList $ zip [0..] program
-
-execute :: [Int] -> Int -> IntMap Int -> ([Int], IntMap Int)
-execute inputs ip program | op == 99 = ([], program)
-                          | isNothing result = execute inputs' ip' program
-                          | otherwise = let res = fromJust result
-                                        in case output of
-                                                Write -> execute inputs' (ip' + 1) $ IM.insert (program IM.! ip') res program
-                                                Jump -> execute inputs' res program
-                                                Output -> first (res :) $ execute inputs' ip' program
+run :: State -> State
+run state@State {..} | op == 99 = state { finished = True }
+                     | isNothing parsed = state
+                     | isNothing result = run $ state { inputs = inputs', ip = ip' }
+                     | otherwise = let res = fromJust result
+                                   in case output of
+                                           Write -> run $ state { inputs = inputs', ip = ip' + 1, program = IM.insert (program IM.! ip') res program }
+                                           Jump -> run $ state { inputs = inputs', ip = res }
+                                           Output -> (\s -> s { outputs = res : s.outputs }) $ run $ state { inputs = inputs', ip = ip' }
     where opRaw = program IM.! ip
           op = opRaw `mod` 100
           Instruction {..} = instruction op
-          (inputs', ip', values) = parseParameters inputs (ip + 1) 100 [] params
+          parsed = parseParameters inputs (ip + 1) 100 [] params
+          (inputs', ip', values) = fromJust parsed
           result = fun values
-          parseParameters :: [Int] -> Int -> Int -> [Int] -> [Bool]-> ([Int], Int, [Int])
-          parseParameters ins i _ vals [] = (ins, i, reverse vals)
+          parseParameters :: [Int] -> Int -> Int -> [Int] -> [Bool]-> Maybe ([Int], Int, [Int])
+          parseParameters ins i _ vals [] = Just (ins, i, reverse vals)
           parseParameters ins i mode vals (False:ps) = let val = program IM.! i
                                                            in case (opRaw `div` mode) `mod` 10 of
                                                                    0 -> parseParameters ins (i + 1) (mode * 10) (program IM.! val : vals) ps
                                                                    1 -> parseParameters ins (i + 1) (mode * 10) (val : vals) ps
                                                                    _ -> error "Invalid parameter mode."
+          parseParameters [] _ _ _ (True:_) = Nothing
           parseParameters ins i mode vals (True:ps) = parseParameters (tl ins) i mode (hd ins : vals) ps

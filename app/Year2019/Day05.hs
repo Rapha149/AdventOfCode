@@ -4,7 +4,7 @@ import Util
 import Year2019.IntcodeComputer
 
 part1 :: Solution
-part1 = V . lst . fst . runIO [1] . parse
+part1 = V . lst . outputs . run . parseStateI [1]
 
 part2 :: Solution
-part2 = V . hd . fst . runIO [5] . parse
+part2 = V . hd . outputs . run . parseStateI [5]

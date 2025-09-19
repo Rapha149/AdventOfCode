@@ -2,15 +2,15 @@ module Year2019.Day02 (part1, part2) where
 
 import Util
 import Year2019.IntcodeComputer
+import qualified Data.IntMap.Strict as IM
 
-setOneTwo :: Int -> Int -> [Int] -> [Int]
-setOneTwo b c (a:_:_:xs) = a : b : c : xs
-setOneTwo _ _ _ = error "Invalid input."
+setOneTwo :: Int -> Int -> State -> State
+setOneTwo a b state@State {program} = state { program = IM.insert 1 a $ IM.insert 2 b program }
 
 part1 :: Solution
-part1 = V . hd . run . setOneTwo 12 2 . parse
+part1 = V . (IM.! 0) . program . run . setOneTwo 12 2 . parseState
 
 part2 :: Solution
-part2 input = let program = parse input
+part2 input = let state = parseState input
               in V $ hd [100 * noun + verb | noun <- [0..99], verb <- [0..99],
-                                             hd (run $ setOneTwo noun verb program) == 19690720]
+                                            program (run $ setOneTwo noun verb state) IM.! 0 == 19690720]
