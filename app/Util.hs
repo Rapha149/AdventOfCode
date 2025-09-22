@@ -1,6 +1,7 @@
 module Util where
 
 import Data.Char
+import Data.Tuple.Extra
 
 data Result = V Int | Msg String | Error String
 type Solution = [String] -> Result
@@ -74,6 +75,9 @@ toSnd f a = (a, f a)
 
 divCeil :: Integral a => a -> a -> a
 divCeil a b = -((-a) `div` b)
+
+getBounds :: [Vec] -> (Vec, Vec)
+getBounds = both (minimum &&& maximum) . unzip
 
 inBounds :: Ord a => (a, a) -> (a, a) -> (a, a) -> Bool
 inBounds (minA, minB) (maxA, maxB) (a, b) = a >= minA && a < maxA && b >= minB && b < maxB

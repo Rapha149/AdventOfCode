@@ -208,4 +208,5 @@ executable advent-of-code
     default-extensions:
         NamedFieldPuns
         RecordWildCards
+        DuplicateRecordFields
         OverloadedRecordDot
