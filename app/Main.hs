@@ -17,6 +17,7 @@ import System.Directory
 import System.IO
 import System.IO.Error
 import System.Exit
+import System.Process
 import Control.Exception
 import qualified Data.Set as Set
 
@@ -74,7 +75,14 @@ loadInput _ _ Clipboard = do
          Nothing -> do
             putStrLn "There are no textual clipboard contents."
             exitFailure
-loadInput year day _ = do
+loadInput _ _ WaylandClipboard = do
+    (code, clipboard, _) <- readProcessWithExitCode "wl-paste" [] ""
+    case code of
+         ExitSuccess -> return clipboard
+         ExitFailure _ -> do
+            putStrLn "There are no textual clipboard contents."
+            exitFailure
+loadInput year day File = do
     let dirPath = printf "./inputs/%d" year
         path = printf "%s/%02d.txt" dirPath day
     result <- try (readFile path) :: IO (Either IOError String)

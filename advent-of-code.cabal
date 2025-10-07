@@ -197,6 +197,7 @@ executable advent-of-code
         http-conduit,
         http-types,
         monad-loops,
+        process,
         regex-compat,
         regex-tdfa,
         simple-vec3,
