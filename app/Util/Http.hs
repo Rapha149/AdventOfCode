@@ -81,7 +81,7 @@ checkAnswer year day part answer = do
     response <- httpLbs req manager
     let body = L8.unpack $ responseBody response
     case statusCode $ responseStatus response of
-        200 -> let answers = map lst $ body =~ ("<p>Your puzzle answer was <code>(.+)</code>.</p>" :: String)
+        200 -> let answers = map lst $ body =~ ("<p>Your puzzle answer was <code>([^<]+)</code>.</p>" :: String)
                in putStrLn $ "\n[CheckAnswer] " <> case (== answer) <$> answers !? (part - 1) of
                                                         Just True -> "That's the right answer!"
                                                         Just False -> "That's not the right answer."
