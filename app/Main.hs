@@ -39,13 +39,16 @@ handleResult = \case
     V value -> do
         putStrLn $ printf "Result: %d" value
         return $ show value
-    RawOCR rows -> case parseOCR rows of
-                        Parsed str -> do
-                            putStrLn $ printf "Result: %s" str
-                            return str
-                        OCRError err ocr -> do
-                            abort $ printf "Error while parsing ocr: %s\nOCR text:\n%s" err ocr
-                            return ""
+    RawOCR rows -> do
+        let (ocr, result) = parseOCR rows
+        putStrLn $ printf "OCR text:\n%s\n" ocr
+        case result of
+             Parsed str -> do
+                 putStrLn $ printf "Result: %s" str
+                 return str
+             OCRError err -> do
+                 abort $ printf "Error while parsing ocr: %s" err
+                 return ""
     OCR grid -> let ((minX, maxX), (minY, maxY)) = getBounds $ Set.toList grid
                 in handleResult $ RawOCR [[Set.member (x, y) grid | x <- [minX..maxX]] | y <- [minY..maxY]]
     Msg msg -> do
