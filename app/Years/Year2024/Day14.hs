@@ -1,11 +1,9 @@
 module Years.Year2024.Day14 (part1, part2) where
 
 import Util.Util
-import Data.List
 import Data.List.Extra
 
 type Robot = (Vec, Vec)
-type State = (Int, [Vec])
 
 move :: Int -> Int -> Robot -> Robot
 move width height ((x, y), (dx, dy)) = (((x + dx) `mod` width, (y + dy) `mod` height), (dx, dy))
@@ -23,16 +21,18 @@ getAvgDistance robots = let avgX = average $ map fst robots
                             square x = x * x
                         in average $ map (\(x, y) -> square (x - avgX) + square (y - avgY)) robots
 
-getNStates :: Int -> Int -> Int -> Int -> [Robot] -> [State]
-getNStates width height n i robots | i >= n = []
-                                        | otherwise = (i, map fst robots) : getNStates width height n (i + 1) (map (move width height) robots)
+findChristmasTree :: [Robot] -> Int -> [Int] -> (Int, [Vec])
+findChristmasTree _ 10000 _ = (0, [])
+findChristmasTree robots 0 _ = findChristmasTree (map (move 101 103) robots) 1 [getAvgDistance $ map fst robots]
+findChristmasTree robots i ds | i >= 100 && change >= 100 = (i, map fst robots)
+                              | otherwise = findChristmasTree (map (move 101 103) robots) (i + 1) (dist:ds)
+    where dist = getAvgDistance $ map fst robots
+          change = minimum $ map (abs . (dist -)) ds
 
-stateToString :: State -> String
-stateToString (i, robots) = show i <> ":\n" <> grid 0 0
-    where grid :: Int -> Int -> String
-          grid _ 103 = ""
-          grid 101 y = '\n' : grid 0 (y + 1)
-          grid x y = (if (x, y) `elem` robots then '#' else '.') : grid (x + 1) y
+robotsToString :: [Vec] -> [[Vec]] -> String
+robotsToString _ [] = ""
+robotsToString robots ([]:ys) = '\n' : robotsToString robots ys
+robotsToString robots ((p:xs):ys) = (if p `elem` robots then '#' else '.') : robotsToString robots (xs:ys)
 
 part1 :: Solution
 part1 rawInput = let ((width, height), input) = getExtraInts 2 (pair . map read) (101, 103) rawInput
@@ -41,6 +41,6 @@ part1 rawInput = let ((width, height), input) = getExtraInts 2 (pair . map read)
                  in V $ product $ map length $ group $ sort $ filter (/= Nothing) $ map (getQuadrant (width `div` 2) (height `div` 2)) moved
 
 part2 :: Solution
-part2 input = let limit = read $ hd input :: Int
-                  robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) $ drop 1 input
-              in Msg $ stateToString $ minimumOn (getAvgDistance . snd) $ getNStates 101 103 limit 0 robots
+part2 input = let robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) input
+                  (n, robots') = findChristmasTree robots 0 []
+              in VMsg n $ robotsToString robots' [[(x, y) | x <- [0..100]] | y <- [0..102]]

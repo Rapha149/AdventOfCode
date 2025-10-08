@@ -40,6 +40,9 @@ handleResult = \case
     V value -> do
         putStrLn $ printf "Result: %d" value
         return $ show value
+    VMsg value msg -> do
+        putStrLn $ printf "Result: %d\n\n%s" value msg
+        return $ show value
     RawOCR rows -> do
         let (ocr, result) = parseOCR rows
         putStrLn $ printf "OCR text:\n%s\n" ocr
