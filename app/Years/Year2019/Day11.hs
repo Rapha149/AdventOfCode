@@ -6,7 +6,7 @@ import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
 paint :: Map Vec Bool -> Vec -> Vec -> State -> Map Vec Bool
-paint colors tile (dx, dy) state | state'.finished = colors'
+paint colors tile (dx, dy) state | state'.status == Finished = colors'
                                  | otherwise = paint colors' (onBoth (+) tile dir') dir' $ state' { outputs = [] }
     where state' = run $ state { inputs = [maybe 0 fromEnum $ colors Map.!? tile] }
           (color, turn) = pair state'.outputs

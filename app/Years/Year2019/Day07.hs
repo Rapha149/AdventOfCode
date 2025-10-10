@@ -16,7 +16,7 @@ part1 input = let state = parseState input
 
 
 getOutput2 :: IntMap State -> Int -> [Int] -> Int
-getOutput2 states idx lastOutputs | idx == 4 && state'.finished = lst state'.outputs
+getOutput2 states idx lastOutputs | idx == 4 && state'.status == Finished = lst state'.outputs
                                   | otherwise = getOutput2 (IM.insert idx (state' { outputs = [] }) states) ((idx + 1) `mod` 5) state'.outputs
     where state = states IM.! idx
           state' = run $ state { inputs = state.inputs ++ lastOutputs }

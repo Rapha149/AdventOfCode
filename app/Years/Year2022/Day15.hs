@@ -21,16 +21,16 @@ isCovered :: [(Vec, Int)] -> Vec -> Bool
 isCovered sensors pos = any (\(s, d) -> distance s pos <= d) sensors
 
 part1 :: Solution
-part1 rawInput = let (row, input) = getExtraInt 2000000 rawInput
-                     (sensors, beacons) = parseInput input
-                     minX = minimum $ map (\((x,_), d) -> x - d) sensors
-                     maxX = maximum $ map (\((x,_), d) -> x + d) sensors
-                 in V $ sum [1 | x <- [minX..maxX], Set.notMember (x, row) beacons, isCovered sensors (x, row)]
+part1 raw = let (row, input) = getExtraInt 2000000 raw
+                (sensors, beacons) = parseInput input
+                minX = minimum $ map (\((x,_), d) -> x - d) sensors
+                maxX = maximum $ map (\((x,_), d) -> x + d) sensors
+            in V $ sum [1 | x <- [minX..maxX], Set.notMember (x, row) beacons, isCovered sensors (x, row)]
 
 part2 :: Solution
-part2 rawInput = let (area, input) = getExtraInt 4000000 rawInput
-                     (sensors, _) = parseInput input
-                 in V $ hd [x * 4000000 + y | ((x1, y1), d1) <- sensors, f1 <- [1, -1], let a = y1 - x1 + (d1 + 1) * f1,
-                                              ((x2, y2), d2) <- sensors, f2 <- [1, -1], let b = x2 + y2 + (d2 + 1) * f2,
-                                              even $ a + b, let x = (b - a) `div` 2, let y = (b + a) `div` 2,
-                                              x >= 0 && y >= 0 && x <= area && y <= area, not $ isCovered sensors (x, y)]
+part2 raw = let (area, input) = getExtraInt 4000000 raw
+                (sensors, _) = parseInput input
+            in V $ hd [x * 4000000 + y | ((x1, y1), d1) <- sensors, f1 <- [1, -1], let a = y1 - x1 + (d1 + 1) * f1,
+                                         ((x2, y2), d2) <- sensors, f2 <- [1, -1], let b = x2 + y2 + (d2 + 1) * f2,
+                                         even $ a + b, let x = (b - a) `div` 2, let y = (b + a) `div` 2,
+                                         x >= 0 && y >= 0 && x <= area && y <= area, not $ isCovered sensors (x, y)]

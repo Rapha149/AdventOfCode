@@ -12,7 +12,7 @@ part1 input = V $ sum [1 | [_, _, 2] <- chunksOf 3 (outputs $ run $ parseState i
 data Game = Game { ball :: Int, paddle :: Int, points :: Int }
 
 play :: Game -> State -> Int
-play game state | state'.finished = points
+play game state | state'.status == Finished = points
                 | otherwise = play game' $ state' { inputs = [signum $ ball - paddle], outputs = [] }
     where state' = run state
           game'@Game {..} = handleOutputs state'.outputs game

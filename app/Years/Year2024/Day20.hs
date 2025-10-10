@@ -21,8 +21,8 @@ getCheats maxDistance minDiff ((i, p):ps) = sumOn' (fromEnum . isCheat) ps + get
                            in distance <= maxDistance && diff >= minDiff
 
 getResult :: Int -> [String] -> Int
-getResult maxDistance rawInput = getCheats maxDistance minDiff $ zip [0..] $ getPath obstacles (-1, -1) start end
-    where (minDiff, input) = getExtraInt 100 rawInput
+getResult maxDistance raw = getCheats maxDistance minDiff $ zip [0..] $ getPath obstacles (-1, -1) start end
+    where (minDiff, input) = getExtraInt 100 raw
           grid = [((r, c), x) | (r, row) <- zip [0..] input, (c, x) <- zip [0..] row]
           obstacles = Set.fromList $ map fst $ filter ((== '#') . snd) grid
           (start, end) = pair $ map (\c -> fst $ fromJust $ find ((== c) . snd) grid) "SE"

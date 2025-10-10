@@ -27,7 +27,7 @@ abort err = hPutStrLn stderr err >> exitFailure
 run :: Args -> IO ()
 run (ArgError err) = abort $ "Wrong arguments: " <> err
 run Options {..} = do
-    input <- loadInput year day source
+    input <- getInput year day source
     putStrLn $ printf "Calculating result for year %d, day %d, part %d..." year day part
     startTime <- getPOSIXTime
     answer <- handleResult $ selectYear year day part $ extra ++ lines input
@@ -69,36 +69,43 @@ printTimeDiff start = do
         diff = round $ (end - start) * 1000
     putStrLn $ printf "\nExecution time: %02d.%02d.%03d" (diff `div` 60000) ((diff `div` 1000) `mod` 60) (diff `mod` 1000)
 
-loadInput :: Int -> Int -> Source -> IO String
-loadInput _ _ Stdin = getContents
-loadInput _ _ Clipboard = do
+getInput :: Int -> Int -> Source -> IO String
+getInput year day File = loadFileInput year day
+getInput _ _ Stdin = getContents
+getInput year day FileStdin = do
+    inputFile <- loadFileInput year day
+    inputStdin <- getContents
+    return $ inputFile ++ inputStdin
+getInput _ _ Clipboard = do
     clipboard <- getClipboardString
     case clipboard of
          Just s -> return s
          Nothing -> do
             putStrLn "There are no textual clipboard contents."
             exitFailure
-loadInput _ _ WaylandClipboard = do
+getInput _ _ WaylandClipboard = do
     (code, clipboard, _) <- readProcessWithExitCode "wl-paste" [] ""
     case code of
          ExitSuccess -> return clipboard
          ExitFailure _ -> do
             putStrLn "There are no textual clipboard contents."
             exitFailure
-loadInput year day File = do
+
+loadFileInput :: Int -> Int -> IO String
+loadFileInput year day = do
     let dirPath = printf "./inputs/%d" year
         path = printf "%s/%02d.txt" dirPath day
     result <- try (readFile path) :: IO (Either IOError String)
     case result of
-        Right contents -> return contents
-        Left e | isDoesNotExistError e -> do
-            input <- fetchInput year day
-            createDirectoryIfMissing True dirPath
-            writeFile path input
-            pure input
-        Left _ -> do
-            putStrLn $ printf "Failed to read the file: \"%s\"." path
-            exitFailure
+         Right contents -> return contents
+         Left e | isDoesNotExistError e -> do
+             input <- fetchInput year day
+             createDirectoryIfMissing True dirPath
+             writeFile path input
+             pure input
+         Left _ -> do
+             putStrLn $ printf "Failed to read the file: \"%s\"." path
+             exitFailure
 
 main :: IO ()
 main = do

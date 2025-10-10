@@ -3,7 +3,7 @@ module Util.Args where
 import Data.Char
 import Data.List.Extra
 
-data Source = File | Stdin | Clipboard | WaylandClipboard
+data Source = File | Stdin | FileStdin | Clipboard | WaylandClipboard
 data Flag = MeasureTime | AutoAnswer | CheckAnswer deriving Eq
 data Args = ArgError String | Options { flags :: [Flag], year :: Int, day :: Int, part :: Int, source :: Source, extra :: [String]}
 
@@ -19,7 +19,7 @@ parseArgs (('-':flagOpt):xs) | flagOpt `notElem` ["t", "a", "ca"] = ArgError "In
                                                    err -> err
 parseArgs [year, day, part] = parseArgs [year, day, part, "file"]
 parseArgs (year:day:part:_) | not $ all (all isDigit) [year, day, part] = ArgError "Specify numbers for year, day and part."
-parseArgs (_:_:_:source:_) | lower source `notElem` ["file", "stdin", "clip", "wclip"] = ArgError "Specify 'file', 'stdin', 'clip' or 'wclip' for the source."
+parseArgs (_:_:_:source:_) | lower source `notElem` ["file", "stdin", "fstdin", "clip", "wclip"] = ArgError "Specify 'file', 'stdin', 'fstdin', 'clip' or 'wclip' for the source."
 parseArgs (year:day:part:source:extra) = Options { flags = [],
                                                    year = read year,
                                                    day = read day,
@@ -27,6 +27,7 @@ parseArgs (year:day:part:source:extra) = Options { flags = [],
                                                    source = case lower source of
                                                                  "file" -> File
                                                                  "stdin" -> Stdin
+                                                                 "fstdin" -> FileStdin
                                                                  "clip" -> Clipboard
                                                                  "wclip" -> WaylandClipboard
                                                                  _ -> error "Unknown source argument.",

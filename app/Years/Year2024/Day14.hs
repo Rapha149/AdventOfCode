@@ -35,10 +35,10 @@ robotsToString robots ([]:ys) = '\n' : robotsToString robots ys
 robotsToString robots ((p:xs):ys) = (if p `elem` robots then '#' else '.') : robotsToString robots (xs:ys)
 
 part1 :: Solution
-part1 rawInput = let ((width, height), input) = getExtraInts 2 (pair . map read) (101, 103) rawInput
-                     robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) input
-                     moved = map (fst . foldr (.) id (replicate 100 (move width height))) robots
-                 in V $ product $ map length $ group $ sort $ filter (/= Nothing) $ map (getQuadrant (width `div` 2) (height `div` 2)) moved
+part1 raw = let ((width, height), input) = getExtraInts 2 (pair . map read) (101, 103) raw
+                robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) input
+                moved = map (fst . foldr (.) id (replicate 100 (move width height))) robots
+            in V $ product $ map length $ group $ sort $ filter (/= Nothing) $ map (getQuadrant (width `div` 2) (height `div` 2)) moved
 
 part2 :: Solution
 part2 input = let robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) input
