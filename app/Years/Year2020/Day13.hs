@@ -10,9 +10,9 @@ nextMultiple :: Int -> Int -> Int
 nextMultiple a b = (a `divCeil` b) * b
 
 part1 :: Solution
-part1 input = let earliest = read $ hd input
-                  buses = map read $ filter (/= "x") $ splitOn "," $ input !! 1
-              in V $ uncurry (*) $ second (subtract earliest) $ minimumOn snd $ map (id &&& nextMultiple earliest) buses
+part1 input = V $ uncurry (*) $ second (subtract earliest) $ minimumOn snd $ map (id &&& nextMultiple earliest) buses
+    where earliest = read $ hd input
+          buses = map read $ filter (/= "x") $ splitOn "," $ input !! 1
 
 
 align :: [(Int, Int)] -> Map Int Int -> Int -> Int -> Int
@@ -26,5 +26,5 @@ align buses timestamps time skip = case firstIncorrect of
     where firstIncorrect = findIndex (\(d, b) -> (time + d) `mod` b /= 0) buses
 
 part2 :: Solution
-part2 input = let buses = map (second read) $ filter ((/= "x") . snd) $ zip [0..] $ splitOn "," $ input !! 1
-              in V $ align buses Map.empty 0 1
+part2 input = V $ align buses Map.empty 0 1
+    where buses = map (second read) $ filter ((/= "x") . snd) $ zip [0..] $ splitOn "," $ input !! 1

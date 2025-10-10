@@ -12,6 +12,13 @@ getQuadrant :: Int -> Int -> Vec -> Maybe Int
 getQuadrant mx my (x, y) | x == mx || y == my = Nothing
                          | otherwise = Just $ fromEnum (x > mx) + fromEnum (y > my) * 2
 
+part1 :: Solution
+part1 raw = V $ product $ map length $ group $ sort $ filter (/= Nothing) $ map (getQuadrant (width `div` 2) (height `div` 2)) moved
+    where ((width, height), input) = getExtraInts 2 (pair . map read) (101, 103) raw
+          robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) input
+          moved = map (fst . foldr (.) id (replicate 100 (move width height))) robots
+
+
 average :: [Int] -> Int
 average xs = sum xs `div` length xs
 
@@ -34,13 +41,7 @@ robotsToString _ [] = ""
 robotsToString robots ([]:ys) = '\n' : robotsToString robots ys
 robotsToString robots ((p:xs):ys) = (if p `elem` robots then '#' else '.') : robotsToString robots (xs:ys)
 
-part1 :: Solution
-part1 raw = let ((width, height), input) = getExtraInts 2 (pair . map read) (101, 103) raw
-                robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) input
-                moved = map (fst . foldr (.) id (replicate 100 (move width height))) robots
-            in V $ product $ map length $ group $ sort $ filter (/= Nothing) $ map (getQuadrant (width `div` 2) (height `div` 2)) moved
-
 part2 :: Solution
-part2 input = let robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) input
-                  (n, robots') = findChristmasTree robots 0 []
-              in VMsg n $ robotsToString robots' [[(x, y) | x <- [0..100]] | y <- [0..102]]
+part2 input = VMsg n $ robotsToString robots' [[(x, y) | x <- [0..100]] | y <- [0..102]]
+    where robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) input
+          (n, robots') = findChristmasTree robots 0 []

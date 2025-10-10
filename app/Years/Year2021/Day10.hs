@@ -40,5 +40,5 @@ getAutocompleteScore (o:open) (Close c:xs) | o == c = getAutocompleteScore open 
 getAutocompleteScore [] (Close _:_) = error "Invalid line."
 
 part2 :: Solution
-part2 input = let scores = sort $ filter (> 0) $ map (getAutocompleteScore [] . parseLine) input
-              in V $ scores !! (length scores `div` 2)
+part2 input = V $ scores !! (length scores `div` 2)
+    where scores = sort $ filter (> 0) $ map (getAutocompleteScore [] . parseLine) input

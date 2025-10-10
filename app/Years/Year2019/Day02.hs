@@ -11,6 +11,6 @@ part1 :: Solution
 part1 = V . (IM.! 0) . program . run . setOneTwo 12 2 . parseState
 
 part2 :: Solution
-part2 input = let state = parseState input
-              in V $ hd [100 * noun + verb | noun <- [0..99], verb <- [0..99],
-                                            program (run $ setOneTwo noun verb state) IM.! 0 == 19690720]
+part2 input = V $ hd [100 * noun + verb | noun <- [0..99], verb <- [0..99],
+                                          program (run $ setOneTwo noun verb state) IM.! 0 == 19690720]
+    where state = parseState input

@@ -31,11 +31,11 @@ countFalling supports (i:is) = Map.size falling + countFalling supported (Map.ke
     where (falling, supported) = Map.partition null $ Map.map (delete i) supports
 
 part1 :: Solution
-part1 input = let bricks = parseInput input
-                  supports = Map.elems $ getSupports Map.empty $ zip [1..] $ sortOn (minimum . map thd3) bricks
-              in V $ length $ filter (\i -> [i] `notElem` supports) [1..length bricks]
+part1 input = V $ length $ filter (\i -> [i] `notElem` supports) [1..length bricks]
+    where bricks = parseInput input
+          supports = Map.elems $ getSupports Map.empty $ zip [1..] $ sortOn (minimum . map thd3) bricks
 
 part2 :: Solution
-part2 input = let bricks = parseInput input
-                  supports = getSupports Map.empty $ zip [1..] $ sortOn (minimum . map thd3) bricks
-              in V $ sum [countFalling supports [i] | i <- [1..length bricks]]
+part2 input = V $ sum [countFalling supports [i] | i <- [1..length bricks]]
+    where bricks = parseInput input
+          supports = getSupports Map.empty $ zip [1..] $ sortOn (minimum . map thd3) bricks

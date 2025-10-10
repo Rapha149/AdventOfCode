@@ -9,5 +9,5 @@ part1 :: Solution
 part1 = V . product . map numberOfWaysToWin . uncurry zip . pair . map (map read . drop 1 . words)
 
 part2 :: Solution
-part2 input = let (time, distance) = pair $ map (read . concat . drop 1 . words) input :: (Int, Int)
-              in V $ length $ filter (\i -> (time - i) * i > distance) [1..time - 1]
+part2 input = V $ length $ filter (\i -> (time - i) * i > distance) [1..time - 1]
+    where (time, distance) = pair $ map (read . concat . drop 1 . words) input :: (Int, Int)

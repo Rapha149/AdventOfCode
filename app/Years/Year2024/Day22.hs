@@ -13,12 +13,13 @@ generateSecretNumbers i n = next : generateSecretNumbers (i - 1) next
           step f n' = (f n' `xor` n') `mod` 16777216
           next = step (* 2048) $ step (`div` 32) $ step (* 64) n
 
+part1 :: Solution
+part1 = V . sumOn' (lst . generateSecretNumbers 2000 . read)
+
+
 getPricesBySequence :: [Int] -> Map (Int, Int, Int, Int) Int
 getPricesBySequence (a:b:c:d:e:xs) = Map.insert (b - a, c - b, d - c, e - d) e $ getPricesBySequence (b:c:d:e:xs)
 getPricesBySequence _ = Map.empty
-
-part1 :: Solution
-part1 = V . sumOn' (lst . generateSecretNumbers 2000 . read)
 
 part2 :: Solution
 part2 = V . maximum . Map.elems . foldr (Map.unionWith (+) . getPricesBySequence . map (`mod` 10) . generateSecretNumbers 2000 . read) Map.empty

@@ -42,11 +42,11 @@ dfs flow paths indices node time opened = foldr (max . open) 0 moves
                         in if cost >= time then 0 else gained + dfs flow paths indices n newTime (setBit opened i)
 
 part1 :: Solution
-part1 input = let (nodes, edges) = parseInput input
-                  paths = floyd (Map.keys nodes) edges
-                  flow = Map.filter (> 0) nodes
-                  indices = zip [0..] $ Map.keys flow
-              in V $ dfs flow paths indices "AA" 30 0
+part1 input = V $ dfs flow paths indices "AA" 30 0
+    where (nodes, edges) = parseInput input
+          paths = floyd (Map.keys nodes) edges
+          flow = Map.filter (> 0) nodes
+          indices = zip [0..] $ Map.keys flow
 
 
 dfsAll :: Map Node Int -> Map Edge Int -> [(Int, Node)] -> Node -> Time -> Mask -> Int -> IntMap Int
@@ -59,9 +59,9 @@ dfsAll flow paths indices node time opened pressure = foldr (IM.unionWith max . 
                         in if cost >= time then IM.empty else dfsAll flow paths indices n newTime (setBit opened i) (pressure + gained)
 
 part2 :: Solution
-part2 input = let (nodes, edges) = parseInput input
-                  paths = floyd (Map.keys nodes) edges
-                  flow = Map.filter (> 0) nodes
-                  indices = zip [0..] $ Map.keys flow
-                  pressures = IM.toList $ dfsAll flow paths indices "AA" 26 0 0
-              in V $ maximum [p1 + p2 | ((m1, p1):xs) <- tails pressures, (m2, p2) <- xs, m1 .&. m2 == 0]
+part2 input = V $ maximum [p1 + p2 | ((m1, p1):xs) <- tails pressures, (m2, p2) <- xs, m1 .&. m2 == 0]
+    where (nodes, edges) = parseInput input
+          paths = floyd (Map.keys nodes) edges
+          flow = Map.filter (> 0) nodes
+          indices = zip [0..] $ Map.keys flow
+          pressures = IM.toList $ dfsAll flow paths indices "AA" 26 0 0

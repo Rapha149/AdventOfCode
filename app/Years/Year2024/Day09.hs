@@ -31,6 +31,12 @@ fillFreeIndividual blocks (free:fs) | pos > free = Map.insert free b $ fillFreeI
                                     | otherwise = blocks
     where ((pos, b), rest) = fromJust $ Map.maxViewWithKey blocks
 
+part1 :: Solution
+part1 input = V $ sum $ map (\(pos, b) -> pos * blockToId b) $ Map.toList filled
+    where blocks = toIndividualBlocks $ Map.toList $ parseBlockLengths $ hd input
+          filled = fillFreeIndividual (Map.filter (/= Free) blocks) (Map.keys $ Map.filter (== Free) blocks)
+
+
 fillFreeFiles :: BlockLengths -> [(Int, Int)] -> [(Int, (Block, Int))] -> BlockLengths
 fillFreeFiles blocks [] _ = blocks
 fillFreeFiles blocks _ [] = blocks
@@ -45,13 +51,8 @@ fillFreeFiles blocks free ((pos, (b, len)):xs) | isNothing result = fillFreeFile
                                | otherwise = second ((p,l):) <$> findFree fs
           result = findFree free
 
-part1 :: Solution
-part1 input = let blocks = toIndividualBlocks $ Map.toList $ parseBlockLengths $ hd input
-                  filled = fillFreeIndividual (Map.filter (/= Free) blocks) (Map.keys $ Map.filter (== Free) blocks)
-              in V $ sum $ map (\(pos, b) -> pos * blockToId b) $ Map.toList filled
-
 part2 :: Solution
-part2 input = let blocks = parseBlockLengths $ hd input
-                  files = Map.filter ((/= Free) . fst) blocks
-                  filled = fillFreeFiles files (Map.toAscList $ Map.map snd $ Map.filter ((== Free) . fst) blocks) (Map.toDescList files)
-              in V $ sum $ map (\(pos, (b, len)) -> sum (take len [pos..]) * blockToId b) $ Map.toList filled
+part2 input = V $ sum $ map (\(pos, (b, len)) -> sum (take len [pos..]) * blockToId b) $ Map.toList filled
+    where blocks = parseBlockLengths $ hd input
+          files = Map.filter ((/= Free) . fst) blocks
+          filled = fillFreeFiles files (Map.toAscList $ Map.map snd $ Map.filter ((== Free) . fst) blocks) (Map.toDescList files)

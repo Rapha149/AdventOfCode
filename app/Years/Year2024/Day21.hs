@@ -41,9 +41,9 @@ getComplexity :: Map (Char, Char) Int -> String -> Int
 getComplexity costs code = sumOn' (costs Map.!) (zip ('A':code) code) * fst (hd $ readDec code)
 
 part1 :: Solution
-part1 input = let costs = minCosts [directional, directional, numeric] (Map.map (const 1) directional)
-              in V $ sumOn' (getComplexity costs) input
+part1 input = V $ sumOn' (getComplexity costs) input
+    where costs = minCosts [directional, directional, numeric] (Map.map (const 1) directional)
 
 part2 :: Solution
-part2 input = let costs = minCosts (replicate 25 directional ++ [numeric]) (Map.map (const 1) directional)
-              in V $ sumOn' (getComplexity costs) input
+part2 input = V $ sumOn' (getComplexity costs) input
+    where costs = minCosts (replicate 25 directional ++ [numeric]) (Map.map (const 1) directional)

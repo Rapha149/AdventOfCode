@@ -22,9 +22,9 @@ getGrid input = ((robot, delta), Set.fromList [(x, y) | (y, row) <- zip [0..] $ 
                        _ -> error "Invalid direction."
 
 part1 :: Solution
-part1 input = let (_, scaffold) = getGrid input
-                  intersections = filter (\(x, y) -> all (`Set.member` scaffold) [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]) $ Set.toList scaffold
-              in V $ sumOn' (uncurry (*)) intersections
+part1 input = V $ sumOn' (uncurry (*)) intersections
+    where (_, scaffold) = getGrid input
+          intersections = filter (\(x, y) -> all (`Set.member` scaffold) [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]) $ Set.toList scaffold
 
 
 getPath :: Set Vec -> Vec -> Vec -> Set Vec -> [(Char, Int)]
@@ -56,12 +56,12 @@ getMainRoutine fs path = c : getMainRoutine fs (drop (length f) path)
     where (c, f) = hd $ filter ((`isPrefixOf` path) . snd) fs
 
 part2 :: Solution
-part2 input = let ((pos, dir), scaffold) = getGrid input
-                  path = getPath scaffold pos dir (Set.singleton pos)
-                  functions = getFunctions path
-                  mainRoutine = getMainRoutine (zip ['A'..] functions) path
-                  inputs = map ord $ unlines $ intercalate "," (map singleton mainRoutine) :
-                                               map (intercalate "," . map (\(c, n) -> [c] ++ "," ++ show n)) functions ++
-                                               ["n"]
-                  state = parseStateI inputs input
-              in V $ lst $ outputs $ run $ state { program = IM.insert 0 2 state.program }
+part2 input = V $ lst $ outputs $ run $ state { program = IM.insert 0 2 state.program }
+    where ((pos, dir), scaffold) = getGrid input
+          path = getPath scaffold pos dir (Set.singleton pos)
+          functions = getFunctions path
+          mainRoutine = getMainRoutine (zip ['A'..] functions) path
+          inputs = map ord $ unlines $ intercalate "," (map singleton mainRoutine) :
+                                       map (intercalate "," . map (\(c, n) -> [c] ++ "," ++ show n)) functions ++
+                                       ["n"]
+          state = parseStateI inputs input

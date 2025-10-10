@@ -35,6 +35,6 @@ part1 :: Solution
 part1 = V . Set.size . getPaths "" . singleton . (["start"],) . parseInput
 
 part2 :: Solution
-part2 input = let nodes = parseInput input
-                  small = Map.keys (Map.filter (not . fst) nodes) \\ ["start", "end"]
-              in V $ Set.size $ foldr (Set.union . (`getPaths` [(["start"], nodes)])) Set.empty small
+part2 input = V $ Set.size $ foldr (Set.union . (`getPaths` [(["start"], nodes)])) Set.empty small
+    where nodes = parseInput input
+          small = Map.keys (Map.filter (not . fst) nodes) \\ ["start", "end"]

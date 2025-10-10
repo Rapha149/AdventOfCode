@@ -40,6 +40,14 @@ moveRobot obstacles robot (delta:ds) | Map.notMember next obstacles = moveRobot 
                                                         Nothing -> moveRobot obstacles robot ds
     where next = onBoth (+) robot delta
 
+sumCoordinates :: Obstacles -> Int
+sumCoordinates = Map.foldrWithKey (\(r, c) b -> (+) $ if b then r * 100 + c else 0) 0
+
+part1 :: Solution
+part1 input = V $ sumCoordinates $ moveRobot obstacles start moves
+    where ((obstacles, start), moves) = bimap parseMap (parseMoves . concat) $ pair $ split null input
+
+
 getWideObstacle :: Obstacles -> Vec -> Maybe (Vec, Bool)
 getWideObstacle obstacles (r, c) = get (r, c) <|> get (r, c - 1)
     where get p = (p,) <$> obstacles Map.!? p
@@ -68,14 +76,7 @@ moveRobotWide obstacles robot (delta:ds) | isNothing obstacle = moveRobotWide ob
     where next = onBoth (+) robot delta
           obstacle = getWideObstacle obstacles next
 
-sumCoordinates :: Obstacles -> Int
-sumCoordinates = Map.foldrWithKey (\(r, c) b -> (+) $ if b then r * 100 + c else 0) 0
-
-part1 :: Solution
-part1 input = let ((obstacles, start), moves) = bimap parseMap (parseMoves . concat) $ pair $ split null input
-              in V $ sumCoordinates $ moveRobot obstacles start moves
-
 part2 :: Solution
-part2 input = let ((obstacles, start), moves) = bimap parseMap (parseMoves . concat) $ pair $ split null input
-                  wideObstacles = Map.mapKeys (second (*2)) obstacles
-              in V $ sumCoordinates $ moveRobotWide wideObstacles (second (*2) start) moves
+part2 input = V $ sumCoordinates $ moveRobotWide wideObstacles (second (*2) start) moves
+    where ((obstacles, start), moves) = bimap parseMap (parseMoves . concat) $ pair $ split null input
+          wideObstacles = Map.mapKeys (second (*2)) obstacles

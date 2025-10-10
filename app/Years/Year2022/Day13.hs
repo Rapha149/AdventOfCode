@@ -33,6 +33,6 @@ part1 :: Solution
 part1 = V . sumOn' fst . filter ((== LT) . uncurry cmp . pair . map parse . snd) . zip [1..] . split null
 
 part2 :: Solution
-part2 input = let dividers = [List [List [Num 2]], List [List [Num 6]]]
-                  sorted = sortBy cmp $ dividers ++ map parse (filter (not . null) input)
-              in V $ productOn' fst $ filter ((`elem` dividers) . snd) $ zip [1..] sorted
+part2 input = V $ productOn' fst $ filter ((`elem` dividers) . snd) $ zip [1..] sorted
+    where dividers = [List [List [Num 2]], List [List [Num 6]]]
+          sorted = sortBy cmp $ dividers ++ map parse (filter (not . null) input)

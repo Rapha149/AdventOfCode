@@ -31,7 +31,7 @@ vaporize linesOfSights (d:ds) = case linesOfSights Map.! d of
                                      (x:xs) -> x : vaporize (Map.insert d xs linesOfSights) ds
 
 part2 :: Solution
-part2 input = let linesOfSights = getMaxLinesOfSight input
-                  order = sortOn getAngle $ Map.keys linesOfSights
-                  (x, y) = vaporize linesOfSights (cycle order) !! 199
-              in V $ x * 100 + y
+part2 input = V $ x * 100 + y
+    where linesOfSights = getMaxLinesOfSight input
+          order = sortOn getAngle $ Map.keys linesOfSights
+          (x, y) = vaporize linesOfSights (cycle order) !! 199

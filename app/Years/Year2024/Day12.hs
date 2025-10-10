@@ -22,6 +22,10 @@ findRegions input = findNext $ Map.fromList [((r, c), x) | (r, row) <- zip [0..]
                                             region = getRegion points char [point] Map.empty
                                         in region : findNext (Map.difference points region)
 
+part1 :: Solution
+part1 = V . sum . map (\r -> Map.size r * Map.foldr ((+) . length) 0 r) . findRegions
+
+
 getSideCount :: Region -> Int
 getSideCount r | Map.null region = 0
                | otherwise = 1 + getSideCount (removeSide region [pos])
@@ -31,9 +35,6 @@ getSideCount r | Map.null region = 0
           removeSide region' [] = region'
           removeSide region' (p:ps) = let next = filter (\np -> Map.member np region' && d `elem` region' Map.! np) $ map (onBoth (+) p) [(-dc, dr), (dc, -dr)]
                                       in removeSide (Map.adjust (delete d) p region') (next ++ ps)
-
-part1 :: Solution
-part1 = V . sum . map (\r -> Map.size r * Map.foldr ((+) . length) 0 r) . findRegions
 
 part2 :: Solution
 part2 = V . sum . map (\r -> Map.size r * getSideCount r) . findRegions

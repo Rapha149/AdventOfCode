@@ -29,12 +29,12 @@ getAcc instructions i seen | Set.member i seen = (0, False)
                                               Nothing -> (0, True)
 
 part1 :: Solution
-part1 input = let instructions = parseInput input
-              in V $ fst $ getAcc instructions 0 Set.empty
+part1 input = V $ fst $ getAcc instructions 0 Set.empty
+    where instructions = parseInput input
 
 part2 :: Solution
-part2 input = let instructions = parseInput input
-              in V $ hd [acc | (i, instr) <- zip [0..] $ toList instructions,
-                               case instr of Acc _ -> False; _ -> True,
-                               let instr' = case instr of Nop v -> Jmp v; Jmp v -> Nop v; Acc _ -> error "Unexpected acc instruction.",
-                               let (acc, finishes) = getAcc (Seq.update i instr' instructions) 0 Set.empty, finishes]
+part2 input = V $ hd [acc | (i, instr) <- zip [0..] $ toList instructions,
+                            case instr of Acc _ -> False; _ -> True,
+                            let instr' = case instr of Nop v -> Jmp v; Jmp v -> Nop v; Acc _ -> error "Unexpected acc instruction.",
+                            let (acc, finishes) = getAcc (Seq.update i instr' instructions) 0 Set.empty, finishes]
+    where instructions = parseInput input

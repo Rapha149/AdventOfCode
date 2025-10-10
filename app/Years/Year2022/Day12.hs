@@ -26,10 +26,10 @@ revBfs heights ends ((pos, len):xs) visited | Set.member pos ends = len
                  map (onBoth (+) pos) [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 part1 :: Solution
-part1 input = let (start, end, heights) = parseInput input
-              in V $ revBfs heights (Set.singleton start) [(end, 0)] (Set.singleton end)
+part1 input = V $ revBfs heights (Set.singleton start) [(end, 0)] (Set.singleton end)
+    where (start, end, heights) = parseInput input
 
 part2 :: Solution
-part2 input = let (_, end, heights) = parseInput input
-                  starts = Map.keysSet $ Map.filter (== 0) heights
-              in V $ revBfs heights starts [(end, 0)] (Set.singleton end)
+part2 input = V $ revBfs heights starts [(end, 0)] (Set.singleton end)
+    where (_, end, heights) = parseInput input
+          starts = Map.keysSet $ Map.filter (== 0) heights

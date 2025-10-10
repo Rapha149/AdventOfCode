@@ -11,13 +11,14 @@ getAntinodes antinodesForAntennas input = Set.size $ Set.fromList $ concatMap (u
           height = length input
           width = length $ hd input
 
+part1 :: Solution
+part1 = V . getAntinodes (\h w a b -> filter (inBounds0 h w) [onBoth (\c d -> 2 * c - d) a b])
+
+
 addUntilEnd :: Int -> Int -> Vec -> Vec -> [Vec]
 addUntilEnd height width pos delta | inBounds0 height width next = next : addUntilEnd height width next delta
                                    | otherwise = []
     where next = onBoth (+) pos delta
-
-part1 :: Solution
-part1 = V . getAntinodes (\h w a b -> filter (inBounds0 h w) [onBoth (\c d -> 2 * c - d) a b])
 
 part2 :: Solution
 part2 = V . getAntinodes (\h w a b -> a : addUntilEnd h w a (onBoth (-) a b))

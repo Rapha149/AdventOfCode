@@ -41,6 +41,11 @@ isAccepted workflows (part, Name name) = isAccepted workflows (part, getTarget $
           getTarget (Cond category cmp number target : rs) | part Map.! category `cmp` number = target
                                                            | otherwise = getTarget rs
 
+part1 :: Solution
+part1 input = V $ sum $ map (Map.foldr (+) 0 . fst) $ filter (isAccepted workflows) $ map (, Name "in") parts
+    where (workflows, parts) = bimap (Map.fromList . map parseWorkflow) (map parsePart) $ pair $ split null input
+
+
 getAcceptedCombinations :: Workflows -> (PartRanges, Target) -> Int
 getAcceptedCombinations _ (ranges, A) = Map.foldr (*) 1 $ Map.map (\(a, b) -> b - a + 1) ranges
 getAcceptedCombinations _ (_, R) = 0
@@ -56,10 +61,6 @@ getAcceptedCombinations workflows (r, Name name) = sum $ map (getAcceptedCombina
                                                                               (False, True) -> (newRange (number + 1, b), target) : splitRanges (newRange (a, number)) rs
                                                                               (True, False) -> (newRange (a, number - 1), target) : splitRanges (newRange (number, b)) rs
 
-part1 :: Solution
-part1 input = let (workflows, parts) = bimap (Map.fromList . map parseWorkflow) (map parsePart) $ pair $ split null input
-              in V $ sum $ map (Map.foldr (+) 0 . fst) $ filter (isAccepted workflows) $ map (, Name "in") parts
-
 part2 :: Solution
-part2 input = let workflows = Map.fromList $ map parseWorkflow $ hd $ split null input
-              in V $ getAcceptedCombinations workflows (Map.fromList $ map (, (1, 4000)) "xmas", Name "in")
+part2 input = V $ getAcceptedCombinations workflows (Map.fromList $ map (, (1, 4000)) "xmas", Name "in")
+    where workflows = Map.fromList $ map parseWorkflow $ hd $ split null input

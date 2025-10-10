@@ -21,6 +21,13 @@ mapNumber (m:ms) x = mapNumber ms $ mapNumber' m
           mapNumber' ((d,a,b):xs) | x >= a && x < b = x - a + d
                                   | otherwise = mapNumber' xs
 
+part1 :: Solution
+part1 input = V $ minimum $ map (mapNumber categories) seeds
+    where parts = split null input
+          seeds = map read $ words $ drop 7 $ hd $ hd parts :: [Int]
+          categories = map parseCategory $ drop 1 parts
+
+
 parseSeedRanges :: [Int] -> [Range]
 parseSeedRanges [] = []
 parseSeedRanges (a:b:xs) = (a, a + b) : parseSeedRanges xs
@@ -45,14 +52,8 @@ mapSeedRanges ((x,y):xs) category = checkCategory category
                                  | iy < y = (x + d, iy + d) : mapSeedRanges ((iy,y):xs) category
                                  | otherwise = (x + d, y + d) : mapSeedRanges xs category
 
-part1 :: Solution
-part1 input = let parts = split null input
-                  seeds = map read $ words $ drop 7 $ hd $ hd parts :: [Int]
-                  categories = map parseCategory $ drop 1 parts
-              in V $ minimum $ map (mapNumber categories) seeds
-
 part2 :: Solution
-part2 input = let parts = split null input
-                  seedRanges = parseSeedRanges $ map read $ words $ drop 7 $ hd $ hd parts
-                  categories = map parseCategory $ drop 1 parts
-              in V $ minimum $ map fst $ foldl mapSeedRanges seedRanges categories
+part2 input = V $ minimum $ map fst $ foldl mapSeedRanges seedRanges categories
+    where parts = split null input
+          seedRanges = parseSeedRanges $ map read $ words $ drop 7 $ hd $ hd parts
+          categories = map parseCategory $ drop 1 parts

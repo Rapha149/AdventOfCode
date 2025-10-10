@@ -26,16 +26,17 @@ getPath points (pos, delta@(dr, dc)) | next `Map.notMember` points = Set.singlet
                                      | otherwise = Set.insert pos $ getPath points (next, delta)
     where next = onBoth (+) pos delta
 
-isLoop :: Map Vec Bool -> State -> Set State -> Bool
-isLoop points state@(pos, delta@(dr, dc)) states | next `Map.notMember` points = False
-                                              | state `Set.member` states = True
-                                              | points Map.! next = isLoop points (pos, (dc, -dr)) states
-                                              | otherwise = isLoop points (next, delta) $ Set.insert state states
-    where next = onBoth (+) pos delta
-
 part1 :: Solution
 part1 = V . Set.size . uncurry getPath . parseInput
 
+
+isLoop :: Map Vec Bool -> State -> Set State -> Bool
+isLoop points state@(pos, delta@(dr, dc)) states | next `Map.notMember` points = False
+                                                 | state `Set.member` states = True
+                                                 | points Map.! next = isLoop points (pos, (dc, -dr)) states
+                                                 | otherwise = isLoop points (next, delta) $ Set.insert state states
+    where next = onBoth (+) pos delta
+
 part2 :: Solution
-part2 input = let (points, start) = parseInput input
-              in V $ Set.size $ Set.filter (\p -> isLoop (Map.insert p True points) start Set.empty) $ getPath points start
+part2 input = V $ Set.size $ Set.filter (\p -> isLoop (Map.insert p True points) start Set.empty) $ getPath points start
+    where (points, start) = parseInput input

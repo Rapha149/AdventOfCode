@@ -35,8 +35,8 @@ getFuelCost reactions (chem:xs) counts = getFuelCost reactions xs $ Map.unionWit
           counts' = Map.map (* recipeCount) $ Map.fromList inputs
 
 part1 :: Solution
-part1 input = let reactions = parseInput input
-              in V $ getFuelCost reactions (getHierarchy reactions) (Map.singleton "FUEL" 1)
+part1 input = V $ getFuelCost reactions (getHierarchy reactions) (Map.singleton "FUEL" 1)
+    where reactions = parseInput input
 
 
 getMaxFuel :: Reactions -> [String] -> Int -> Int
@@ -49,5 +49,5 @@ getMaxFuel reactions hierarchy target = binSearch initLow (initLow * 2)
                                            in if cost < target then binSearch fuel high else binSearch low fuel
 
 part2 :: Solution
-part2 input = let reactions = parseInput input
-              in V $ getMaxFuel reactions (getHierarchy reactions) 1000000000000
+part2 input = V $ getMaxFuel reactions (getHierarchy reactions) 1000000000000
+    where reactions = parseInput input

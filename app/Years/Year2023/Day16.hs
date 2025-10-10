@@ -27,12 +27,12 @@ countEnergizedTiles layout height width tiles ((p, (dr, dc)):bs) = countEnergize
                       _ -> error "Invalid character."
 
 part1 :: Solution
-part1 input = let (height, width, _, _, layout) = parseInput input
-              in V $ countEnergizedTiles layout height width (Set.singleton ((0, 0), (0, 1))) [((0, 0), (0, 1))]
+part1 input = V $ countEnergizedTiles layout height width (Set.singleton ((0, 0), (0, 1))) [((0, 0), (0, 1))]
+    where (height, width, _, _, layout) = parseInput input
 
 part2 :: Solution
-part2 input = let (height, width, rows, cols, layout) = parseInput input
-              in V $ maximum $ map (\x -> countEnergizedTiles layout height width (Set.singleton x) [x]) $ [((r, 0), (0, 1)) | r <- rows] ++
-                                                                                                           [((r, width - 1), (0, -1)) | r <- rows] ++
-                                                                                                           [((0, c), (1, 0)) | c <- cols] ++
-                                                                                                           [((height - 1, c), (-1, 0)) | c <- cols]
+part2 input = V $ maximum $ map (\x -> countEnergizedTiles layout height width (Set.singleton x) [x]) $ [((r, 0), (0, 1)) | r <- rows] ++
+                                                                                                        [((r, width - 1), (0, -1)) | r <- rows] ++
+                                                                                                        [((0, c), (1, 0)) | c <- cols] ++
+                                                                                                        [((height - 1, c), (-1, 0)) | c <- cols]
+    where (height, width, rows, cols, layout) = parseInput input

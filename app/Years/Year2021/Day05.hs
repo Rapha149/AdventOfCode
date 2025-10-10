@@ -18,7 +18,7 @@ part1 :: Solution
 part1 = V . getOverlapping . getStraightLines . parseInput
 
 part2 :: Solution
-part2 input = let ls = parseInput input
-                  diagonal = [(x1 + n * dx, y1 + n * dy) | ((x1, y1), (x2, y2)) <- ls, x1 /= x2 && y1 /= y2,
-                                                           let dx = signum $ x2 - x1, let dy = signum $ y2 - y1, n <- [0..abs $ x1 - x2]]
-              in V $ getOverlapping $ diagonal ++ getStraightLines ls
+part2 input = V $ getOverlapping $ diagonal ++ getStraightLines ls
+    where ls = parseInput input
+          diagonal = [(x1 + n * dx, y1 + n * dy) | ((x1, y1), (x2, y2)) <- ls, x1 /= x2 && y1 /= y2,
+                                                   let dx = signum $ x2 - x1, let dy = signum $ y2 - y1, n <- [0..abs $ x1 - x2]]

@@ -18,6 +18,12 @@ countSteps _ _ _ "ZZZ" = 0
 countSteps network instructions [] node = countSteps network instructions instructions node
 countSteps network instructions (i:is) node = 1 + countSteps network instructions is ((if i == 'L' then fst else snd) $ network Map.! node)
 
+part1 :: Solution
+part1 input = V $ countSteps network instructions [] "AAA"
+    where instructions = hd input
+          network = Map.fromList $ map (parseLine . words) $ drop 2 input
+
+
 findLoop :: Network -> String -> String -> Int -> String -> [(String, Int)] -> (Int, Int)
 findLoop network instructions [] _ node path = findLoop network instructions instructions 0 node path
 findLoop network instructions (i:is) x node path | (node, x) `elem` path = let revPath = reverse path
@@ -43,15 +49,10 @@ firstOccurrence _ _ _ (_:_:"Z") = 0
 firstOccurrence network instructions [] node = firstOccurrence network instructions instructions node
 firstOccurrence network instructions (i:is) node = 1 + firstOccurrence network instructions is ((if i == 'L' then fst else snd) $ network Map.! node)
 
-part1 :: Solution
-part1 input = let instructions = hd input
-                  network = Map.fromList $ map (parseLine . words) $ drop 2 input
-              in V $ countSteps network instructions [] "AAA"
-
 part2 :: Solution
-part2 raw = let (loops, input) = getExtra1 (== "loops") (const True) False raw
-                instructions = hd input
-                network = Map.fromList $ map (parseLine . words) $ drop 2 input
-                startNodes = filter ((== 'A') . (!! 2)) $ Map.keys network
-            in if loops then Msg $ intercalate "\n" $ map (loopToString network instructions) startNodes
-                        else V $ foldr (lcm . firstOccurrence network instructions []) 1 startNodes
+part2 raw | loops = Msg $ intercalate "\n" $ map (loopToString network instructions) startNodes
+          | otherwise = V $ foldr (lcm . firstOccurrence network instructions []) 1 startNodes
+    where (loops, input) = getExtra1 (== "loops") (const True) False raw
+          instructions = hd input
+          network = Map.fromList $ map (parseLine . words) $ drop 2 input
+          startNodes = filter ((== 'A') . (!! 2)) $ Map.keys network

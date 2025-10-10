@@ -16,9 +16,9 @@ getCoordinates xs = sumOn' (Seq.index xs . (`mod` Seq.length xs) . (zeroIdx+)) [
     where zeroIdx = fromJust $ Seq.elemIndexL 0 xs
 
 part1 :: Solution
-part1 input = let elements = zip [0..] $ map read input
-              in V $ getCoordinates $ snd <$> foldl move (Seq.fromList elements) elements
+part1 input = V $ getCoordinates $ snd <$> foldl move (Seq.fromList elements) elements
+    where elements = zip [0..] $ map read input
 
 part2 :: Solution
-part2 input = let elements = zip [0..] $ map ((* 811589153) . read) input
-              in V $ getCoordinates $ snd <$> foldr ($) (Seq.fromList elements) (replicate 10 (\xs -> foldl move xs elements))
+part2 input = V $ getCoordinates $ snd <$> foldr ($) (Seq.fromList elements) (replicate 10 (\xs -> foldl move xs elements))
+    where elements = zip [0..] $ map ((* 811589153) . read) input

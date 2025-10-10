@@ -36,8 +36,8 @@ getResult :: (Vec, Vec) -> Int
 getResult ((r, c), (dr, dc)) = 1000 * (r + 1) + 4 * (c + 1) + if dr + dc > 0 then dr else -(3 * dr + 2 * dc)
 
 part1 :: Solution
-part1 input = let (grid, start, moves) = parseInput input
-              in V $ getResult $ move grid wrapEdge (start, (0, 1)) moves
+part1 input = V $ getResult $ move grid wrapEdge (start, (0, 1)) moves
+    where (grid, start, moves) = parseInput input
 
 
 type Edge = (Vec, Vec)
@@ -70,11 +70,11 @@ wrapCube len neighbors _ (pos, dir) = (newPos, newDir)
           newPos = select fstNew (first, second) (+ newRel) newFacePos
 
 part2 :: Solution
-part2 input = let (grid, start, moves) = parseInput input
-                  len = floor $ sqrt (fromIntegral $ Map.size grid `div` 6 :: Double)
-                  faces = Set.map (getFace len) $ Map.keysSet grid
-                  edges = [(face, dir) | face <- Set.toList faces, dir <- [(1, 0), (-1, 0), (0, 1), (0, -1)], onBoth (+) face dir `Set.notMember` faces]
-                  minFace = (Set.findMin (Set.map fst faces) - 1, Set.findMin (Set.map snd faces) - 1)
-                  maxFace = (Set.findMax (Set.map fst faces) + 1, Set.findMax (Set.map snd faces) + 1)
-                  neighbors = edgeBfs (inBoundsI minFace maxFace) (Set.fromList $ map (second (both negate)) edges) (map (id &&& (\(p, d) -> (onBoth (+) p d, d))) edges) Map.empty
-              in V $ getResult $ move grid (wrapCube len neighbors) (start, (0, 1)) moves
+part2 input = V $ getResult $ move grid (wrapCube len neighbors) (start, (0, 1)) moves
+    where (grid, start, moves) = parseInput input
+          len = floor $ sqrt (fromIntegral $ Map.size grid `div` 6 :: Double)
+          faces = Set.map (getFace len) $ Map.keysSet grid
+          edges = [(face, dir) | face <- Set.toList faces, dir <- [(1, 0), (-1, 0), (0, 1), (0, -1)], onBoth (+) face dir `Set.notMember` faces]
+          minFace = (Set.findMin (Set.map fst faces) - 1, Set.findMin (Set.map snd faces) - 1)
+          maxFace = (Set.findMax (Set.map fst faces) + 1, Set.findMax (Set.map snd faces) + 1)
+          neighbors = edgeBfs (inBoundsI minFace maxFace) (Set.fromList $ map (second (both negate)) edges) (map (id &&& (\(p, d) -> (onBoth (+) p d, d))) edges) Map.empty

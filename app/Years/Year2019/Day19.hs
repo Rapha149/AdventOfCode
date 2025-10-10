@@ -16,18 +16,18 @@ getSquare state (minRatio, maxRatio) area y = case filter (\p@(_,y') -> y' + 100
                                                    [] -> getSquare state (minRatio, maxRatio) area' $ y + 1
                                                    [p] -> p
                                                    _ -> error "Multiple solutions."
-      where left = floor $ minRatio * fromIntegral y
-            right = ceiling $ maxRatio * fromIntegral y
-            area' = Set.union area $ Set.fromList [(x, y) | x <- [left..right], toEnum $ hd $ outputs $ run $ state { inputs = [x, y] }]
+    where left = floor $ minRatio * fromIntegral y
+          right = ceiling $ maxRatio * fromIntegral y
+          area' = Set.union area $ Set.fromList [(x, y) | x <- [left..right], toEnum $ hd $ outputs $ run $ state { inputs = [x, y] }]
 
 fits :: Set Vec -> Vec -> Bool
 fits area (x, y) = Set.member (x + 99, y) area && Set.member (x, y + 99) area
 
 part2 :: Solution
-part2 input = let state = parseState input
-                  smallArea = Map.fromListWith (++) [(fromIntegral y, [fromIntegral x]) | x <- [1..49], y <- [1..49], toEnum $ hd $ outputs $ run $ state { inputs = [x, y] }]
-                  getRatio :: (forall a. Ord a => [a] -> a) -> Double
-                  getRatio f = f $ Map.elems $ Map.mapWithKey (\y xs -> f xs / y) smallArea
-                  ratios = (getRatio minimum - 0.1, getRatio maximum + 0.1)
-                  (sx, sy) = getSquare state ratios Set.empty 0
-              in V $ sx * 10000 + sy
+part2 input = V $ sx * 10000 + sy
+    where state = parseState input
+          smallArea = Map.fromListWith (++) [(fromIntegral y, [fromIntegral x]) | x <- [1..49], y <- [1..49], toEnum $ hd $ outputs $ run $ state { inputs = [x, y] }]
+          getRatio :: (forall a. Ord a => [a] -> a) -> Double
+          getRatio f = f $ Map.elems $ Map.mapWithKey (\y xs -> f xs / y) smallArea
+          ratios = (getRatio minimum - 0.1, getRatio maximum + 0.1)
+          (sx, sy) = getSquare state ratios Set.empty 0

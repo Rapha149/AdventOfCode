@@ -22,11 +22,11 @@ getShortestTime height width start end blizzards time positions | Set.member end
           next = Set.foldr (Set.union . Set.fromList . getNext) Set.empty positions
 
 part1 :: Solution
-part1 input = let (start, end, height, width, blizzards) = parseInput input
-              in V $ getShortestTime height width start end blizzards 1 (Set.singleton start)
+part1 input = V $ getShortestTime height width start end blizzards 1 (Set.singleton start)
+    where (start, end, height, width, blizzards) = parseInput input
 
 part2 :: Solution
-part2 input = let (start, end, height, width, blizzards) = parseInput input
-                  getTime :: Int -> (Vec, Vec) -> Int
-                  getTime time (s, e) = getShortestTime height width s e blizzards (time + 1) (Set.singleton s)
-              in V $ foldl getTime 0 [(start, end), (end, start), (start, end)]
+part2 input = V $ foldl getTime 0 [(start, end), (end, start), (start, end)]
+    where (start, end, height, width, blizzards) = parseInput input
+          getTime :: Int -> (Vec, Vec) -> Int
+          getTime time (s, e) = getShortestTime height width s e blizzards (time + 1) (Set.singleton s)

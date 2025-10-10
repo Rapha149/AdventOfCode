@@ -19,13 +19,13 @@ getVisibleEdge heights dir point highest | Map.notMember point heights = Set.emp
           next = onBoth (+) point dir
 
 part1 :: Solution
-part1 input = let heights = parseInput input
-                  maxR = length input - 1
-                  maxC = length (hd input) - 1
-                  starts = [((1, 0), (0, c)) | c <- [1..maxC-1]] ++ [((-1, 0), (maxR, c)) | c <- [1..maxC-1]] ++
-                           [((0, 1), (r, 0)) | r <- [1..maxR-1]] ++ [((0, -1), (r, maxC)) | r <- [1..maxR-1]]
-                  heights' = Map.withoutKeys heights $ Set.fromList $ map snd starts
-              in V $ 2 * (maxR + maxC) + Set.size (foldr (\(d, p) -> Set.union $ getVisibleEdge heights' d (onBoth (+) p d) (heights Map.! p)) Set.empty starts)
+part1 input = V $ 2 * (maxR + maxC) + Set.size (foldr (\(d, p) -> Set.union $ getVisibleEdge heights' d (onBoth (+) p d) (heights Map.! p)) Set.empty starts)
+    where heights = parseInput input
+          maxR = length input - 1
+          maxC = length (hd input) - 1
+          starts = [((1, 0), (0, c)) | c <- [1..maxC-1]] ++ [((-1, 0), (maxR, c)) | c <- [1..maxC-1]] ++
+                   [((0, 1), (r, 0)) | r <- [1..maxR-1]] ++ [((0, -1), (r, maxC)) | r <- [1..maxR-1]]
+          heights' = Map.withoutKeys heights $ Set.fromList $ map snd starts
 
 
 getVisiblePoint :: Map Vec Int -> Int -> Vec -> Vec -> Int
@@ -38,5 +38,5 @@ getScenicScore heights point = productOn' (\d -> getVisiblePoint heights height 
     where height = heights Map.! point
 
 part2 :: Solution
-part2 input = let heights = parseInput input
-              in V $ maximum $ map (getScenicScore heights) $ Map.keys heights
+part2 input = V $ maximum $ map (getScenicScore heights) $ Map.keys heights
+    where heights = parseInput input

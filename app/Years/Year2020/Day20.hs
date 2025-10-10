@@ -84,14 +84,14 @@ getSeaMonster image pos | all (`Set.member` image) monster = Set.fromList monste
                                           (1, 16), (0, 17), (-1, 18), (0, 18), (0, 19)]
 
 part2 :: Solution
-part2 input = let tiles = getTiles input
-                  width = length $ content $ snd $ IM.findMin tiles
-                  assembled = Map.map getFinalContent $ reassemble tiles
-                  image = Map.foldrWithKey (\pos -> Set.union . Set.map (onBoth (+) (both (* width) pos))) Set.empty assembled
-                  monsters = hd [ms | f <- [id, second negate, -- 0°
-                                            second negate . swap, swap, -- 90°
-                                            both negate, first negate, -- 180°
-                                            first negate . swap, both negate], -- 270°
-                                      let image' = Set.map f image, let ms = foldr (Set.union . getSeaMonster image') Set.empty image',
-                                      not $ null ms]
-              in V $ Set.size image - Set.size monsters
+part2 input = V $ Set.size image - Set.size monsters
+    where tiles = getTiles input
+          width = length $ content $ snd $ IM.findMin tiles
+          assembled = Map.map getFinalContent $ reassemble tiles
+          image = Map.foldrWithKey (\pos -> Set.union . Set.map (onBoth (+) (both (* width) pos))) Set.empty assembled
+          monsters = hd [ms | f <- [id, second negate, -- 0°
+                                    second negate . swap, swap, -- 90°
+                                    both negate, first negate, -- 180°
+                                    first negate . swap, both negate], -- 270°
+                              let image' = Set.map f image, let ms = foldr (Set.union . getSeaMonster image') Set.empty image',
+                              not $ null ms]

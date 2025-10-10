@@ -20,6 +20,11 @@ bfs size points (path:ps) | hd path == (size, size) = Just path
                           | otherwise = bfs size (foldr Set.delete points adjacents) (ps ++ map (:path) adjacents)
     where adjacents = filter (`Set.member` points) $ map (onBoth (+) $ hd path) [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
+part1 :: Solution
+part1 input = V $ subtract 1 $ length $ fromJust $ bfs size (foldr Set.delete points $ take count bytes) [[(0,0)]]
+    where (bytes, points, size, count) = parseInput input
+
+
 firstBlocking :: Int -> Set Vec -> Set Vec -> [Vec] -> Vec
 firstBlocking _ _ _ [] = error "No blocking obstacle."
 firstBlocking size points lastPath (b:bs) | Set.notMember b lastPath = firstBlocking size newPoints lastPath bs
@@ -28,10 +33,6 @@ firstBlocking size points lastPath (b:bs) | Set.notMember b lastPath = firstBloc
                                                              Nothing -> b
     where newPoints = Set.delete b points
 
-part1 :: Solution
-part1 input = let (bytes, points, size, count) = parseInput input
-              in V $ subtract 1 $ length $ fromJust $ bfs size (foldr Set.delete points $ take count bytes) [[(0,0)]]
-
 part2 :: Solution
-part2 input = let (bytes, points, size, _) = parseInput input
-              in Msg $ uncurry (printf "%d,%d") $ firstBlocking size points points bytes
+part2 input = Msg $ uncurry (printf "%d,%d") $ firstBlocking size points points bytes
+    where (bytes, points, size, _) = parseInput input

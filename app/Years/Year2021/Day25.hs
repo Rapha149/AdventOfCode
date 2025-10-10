@@ -17,7 +17,7 @@ moveUntilEnd height width east south | east == east' && south == south' = 1
                                   in if Set.member movePos total then (r, c) else movePos
 
 part1 :: Solution
-part1 input = let total = [((r, c), x) | (r, row) <- zip [0..] input, (c, x) <- zip [0..] row, x /= '.']
-                  (east, south) = both (Set.fromList . map fst) $ partition ((== '>') . snd) total
-                  (height, width) = (length input, length $ hd input)
-              in V $ moveUntilEnd height width east south
+part1 input = V $ moveUntilEnd height width east south
+    where total = [((r, c), x) | (r, row) <- zip [0..] input, (c, x) <- zip [0..] row, x /= '.']
+          (east, south) = both (Set.fromList . map fst) $ partition ((== '>') . snd) total
+          (height, width) = (length input, length $ hd input)

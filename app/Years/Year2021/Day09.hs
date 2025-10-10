@@ -26,6 +26,6 @@ getBasin heightmap visited (pos:ps) = getBasin heightmap (Set.insert pos visited
           next = filter (\p -> Set.notMember p visited && maybe False (> height) (heightmap Map.!? p)) $ map (onBoth (+) pos) [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 part2 :: Solution
-part2 input = let heightmap = parseInput input
-                  basins = map (getBasin (Map.filter (< 9) heightmap) Set.empty . singleton) $ Map.keys $ getLowPoints heightmap
-              in V $ product $ take 3 $ sortOn Down $ map Set.size basins
+part2 input = V $ product $ take 3 $ sortOn Down $ map Set.size basins
+    where heightmap = parseInput input
+          basins = map (getBasin (Map.filter (< 9) heightmap) Set.empty . singleton) $ Map.keys $ getLowPoints heightmap

@@ -72,5 +72,5 @@ part1 :: Solution
 part1 = V . Set.size . snd . inputToLocations
 
 part2 :: Solution
-part2 input = let locations = map location $ F.toList $ fst $ inputToLocations input
-              in V $ maximum [round $ sumElements $ cmap abs $ l2 - l1 | (l1:xs) <- tails locations, l2 <- xs]
+part2 input = V $ maximum [round $ sumElements $ cmap abs $ l2 - l1 | (l1:xs) <- tails locations, l2 <- xs]
+    where locations = map location $ F.toList $ fst $ inputToLocations input

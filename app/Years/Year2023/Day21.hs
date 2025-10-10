@@ -19,16 +19,16 @@ pathLengths plots ((p, n):ps) paths = pathLengths plots (ps ++ adjacents) $ fold
     where adjacents = map (, n + 1) $ filter (\x -> Set.member x plots && Map.notMember x paths) $ map (onBoth (+) p) [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
 part1 :: Solution
-part1 input = let (start, plots) = parseInput input
-                  lengths = pathLengths plots [(start, 0)] $ Map.singleton start 0
-              in V $ length $ filter (\n -> n <= 64 && even n) lengths
+part1 input = V $ length $ filter (\n -> n <= 64 && even n) lengths
+    where (start, plots) = parseInput input
+          lengths = pathLengths plots [(start, 0)] $ Map.singleton start 0
 
 -- https://github.com/villuna/aoc23/wiki/A-Geometric-solution-to-advent-of-code-2023,-day-21
 part2 :: Solution
-part2 input = let (start, plots) = parseInput input
-                  lengths = pathLengths plots [(start, 0)] $ Map.singleton start 0
-                  (evenAll, oddAll) = both length $ partition even lengths
-                  (evenCorners, oddCorners) = both length $ partition even $ filter (> 65) lengths
-                  height = length input
-                  n = ((26501365 - height `div` 2) `div` height)
-              in V $ (n + 1) * (n + 1) * oddAll + n * n * evenAll - (n + 1) * oddCorners + n * evenCorners
+part2 input = V $ (n + 1) * (n + 1) * oddAll + n * n * evenAll - (n + 1) * oddCorners + n * evenCorners
+    where (start, plots) = parseInput input
+          lengths = pathLengths plots [(start, 0)] $ Map.singleton start 0
+          (evenAll, oddAll) = both length $ partition even lengths
+          (evenCorners, oddCorners) = both length $ partition even $ filter (> 65) lengths
+          height = length input
+          n = (26501365 - height `div` 2) `div` height

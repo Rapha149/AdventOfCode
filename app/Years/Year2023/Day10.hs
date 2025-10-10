@@ -43,6 +43,16 @@ maxDistance _ [] _ = 0
 maxDistance diagram ((p, d):ps) visited = max d $ maxDistance diagram (ps ++ map (, d + 1) adjacents) (foldr Set.insert visited adjacents)
     where adjacents = filter (`Set.notMember` visited) $ map (onBoth (+) p) $ getDirections $ diagram Map.! p
 
+findInside :: [Vec] -> Set Vec -> Set Vec
+findInside [] unmarked = unmarked
+findInside (p:xs) unmarked = findInside (adjacents ++ xs) (Set.difference unmarked $ Set.fromList adjacents)
+    where adjacents = filter (`Set.member` unmarked) $ map (onBoth (+) p) [(-1, 0), (0, 1), (1, 0), (0, -1)]
+
+part1 :: Solution
+part1 input = V $ maxDistance diagram [(start, 0)] (Set.singleton start)
+    where (start, diagram) = parseInput input
+
+
 getPath :: Diagram -> [Vec] -> Set Vec -> [Vec]
 getPath _ [] path = Set.toList path
 getPath diagram (p:ps) path = getPath diagram (adjacents ++ ps) (foldr Set.insert path adjacents)
@@ -54,18 +64,9 @@ expand diagram ((r, c):xs) = (mr, mc) : map (bimap (+mr) (+mc)) (getDirections $
     where mr = r * 3 + 1
           mc = c * 3 + 1
 
-findInside :: [Vec] -> Set Vec -> Set Vec
-findInside [] unmarked = unmarked
-findInside (p:xs) unmarked = findInside (adjacents ++ xs) (Set.difference unmarked $ Set.fromList adjacents)
-    where adjacents = filter (`Set.member` unmarked) $ map (onBoth (+) p) [(-1, 0), (0, 1), (1, 0), (0, -1)]
-
-part1 :: Solution
-part1 input = let (start, diagram) = parseInput input
-              in V $ maxDistance diagram [(start, 0)] (Set.singleton start)
-
 part2 :: Solution
-part2 input = let (start, diagram) = parseInput input
-                  path = expand diagram $ getPath diagram [start] (Set.singleton start)
-                  expandedCoords = Set.fromList [(r, c) | r <- [0..3 * length input - 1], c <- [0..3 * length (hd input) - 1]]
-                  inside = findInside [(0,0)] (Set.difference expandedCoords $ Set.fromList path)
-              in V $ Set.size $ Set.filter (\(r, c) -> (r - 1) `mod` 3 == 0 && (c - 1) `mod` 3 == 0) inside
+part2 input = V $ Set.size $ Set.filter (\(r, c) -> (r - 1) `mod` 3 == 0 && (c - 1) `mod` 3 == 0) inside
+    where (start, diagram) = parseInput input
+          path = expand diagram $ getPath diagram [start] (Set.singleton start)
+          expandedCoords = Set.fromList [(r, c) | r <- [0..3 * length input - 1], c <- [0..3 * length (hd input) - 1]]
+          inside = findInside [(0,0)] (Set.difference expandedCoords $ Set.fromList path)

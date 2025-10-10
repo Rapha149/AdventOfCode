@@ -54,5 +54,5 @@ part1 :: Solution
 part1 = V . getMagnitude . foldl1 add . map (parseNumber 0)
 
 part2 :: Solution
-part2 input = let numbers = zip [0 :: Int ..] $ map (parseNumber 0) input
-              in V $ maximum [getMagnitude $ add s1 s2 | (i1, s1) <- numbers, (i2, s2) <- numbers, i1 /= i2]
+part2 input = V $ maximum [getMagnitude $ add s1 s2 | (i1, s1) <- numbers, (i2, s2) <- numbers, i1 /= i2]
+    where numbers = zip [0 :: Int ..] $ map (parseNumber 0) input

@@ -32,5 +32,5 @@ fill area border | null area' = 0
           border' = concatMap (\(x, y) -> filter (`Set.member` area') [(x, y + 1), (x, y - 1), (x - 1, y), (x + 1, y)]) border
 
 part2 :: Solution
-part2 input = let Region {..} = getRegion input
-              in V $ fill area [oxygenPos]
+part2 input = V $ fill area [oxygenPos]
+    where Region {..} = getRegion input

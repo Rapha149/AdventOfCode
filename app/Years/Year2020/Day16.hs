@@ -19,8 +19,8 @@ isInRanges :: [Range] -> Int -> Bool
 isInRanges ranges n = any (\(a, b) -> n >= a && n <= b) ranges
 
 part1 :: Solution
-part1 input = let (rules, _, nearby) = parseInput input
-              in V $ sum $ concatMap (filter (not . isInRanges (concat rules))) nearby
+part1 input = V $ sum $ concatMap (filter (not . isInRanges (concat rules))) nearby
+    where (rules, _, nearby) = parseInput input
 
 
 findPositions :: Map String [Range] -> [(Int, Int)] -> Map String [Int] -> Map String Int
@@ -36,10 +36,10 @@ findPositions rules ((field, value):xs) possible | null possible' = positions
                        in if null found then (Map.empty, m) else first (Map.union $ Map.fromList found) $ getFound m'
 
 part2 :: Solution
-part2 input = let (prefix, (rules, yours, nearby)) = second parseInput $ getExtra1 (notElem ':') id "departure" input
-                  valid = filter (all (isInRanges (concat rules))) nearby
-                  fields = concatMap (zip [0..]) valid
-                  initPositions = [0 .. length yours - 1]
-                  positions = findPositions rules fields (Map.map (const initPositions) rules)
-                  yourValues = Map.map (yours !!) positions
-              in V $ product $ Map.filterWithKey (const . isPrefixOf prefix) yourValues
+part2 input = V $ product $ Map.filterWithKey (const . isPrefixOf prefix) yourValues
+    where (prefix, (rules, yours, nearby)) = second parseInput $ getExtra1 (notElem ':') id "departure" input
+          valid = filter (all (isInRanges (concat rules))) nearby
+          fields = concatMap (zip [0..]) valid
+          initPositions = [0 .. length yours - 1]
+          positions = findPositions rules fields (Map.map (const initPositions) rules)
+          yourValues = Map.map (yours !!) positions

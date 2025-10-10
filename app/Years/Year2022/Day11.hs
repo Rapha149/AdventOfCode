@@ -42,6 +42,6 @@ part1 :: Solution
 part1 = V . getMonkeyBusiness 20 (`div` 3) . parseInput
 
 part2 :: Solution
-part2 input = let parsed@(monkeys,_) = parseInput input
-                  multiple = foldr (lcm . test . snd) 1 monkeys
-              in V $ getMonkeyBusiness 10000 (`mod` multiple) parsed
+part2 input = V $ getMonkeyBusiness 10000 (`mod` multiple) parsed
+    where parsed@(monkeys,_) = parseInput input
+          multiple = foldr (lcm . test . snd) 1 monkeys

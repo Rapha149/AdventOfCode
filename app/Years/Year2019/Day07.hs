@@ -11,8 +11,8 @@ getOutput1 _ lastOutput [] = lastOutput
 getOutput1 state lastOutput (phase:xs) = getOutput1 state (hd $ outputs $ run $ state { inputs = [phase, lastOutput] }) xs
 
 part1 :: Solution
-part1 input = let state = parseState input
-              in V $ maximum $ map (getOutput1 state 0) $ permutations [0..4]
+part1 input = V $ maximum $ map (getOutput1 state 0) $ permutations [0..4]
+    where state = parseState input
 
 
 getOutput2 :: IntMap State -> Int -> [Int] -> Int
@@ -22,6 +22,6 @@ getOutput2 states idx lastOutputs | idx == 4 && state'.status == Finished = lst 
           state' = run $ state { inputs = state.inputs ++ lastOutputs }
 
 part2 :: Solution
-part2 input = let state = parseState input
-              in V $ maximum [getOutput2 states 0 [0] | phases <- permutations [5..9],
-                                                        let states = IM.fromList $ zip [0..] $ map (\phase -> state { inputs = [phase] }) phases]
+part2 input = V $ maximum [getOutput2 states 0 [0] | phases <- permutations [5..9],
+                                                     let states = IM.fromList $ zip [0..] $ map (\phase -> state { inputs = [phase] }) phases]
+    where state = parseState input

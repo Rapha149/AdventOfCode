@@ -42,7 +42,7 @@ lineToEdges line = Map.fromList $ (a, Map.fromList $ map (, 1) bs) : map (, Map.
     where (a, bs) = second (splitOn " ") $ pair $ splitOn ": " line
 
 part1 :: Solution
-part1 input = let edges = foldr (Map.unionWith Map.union . lineToEdges) Map.empty input
-                  nodes = Map.keys edges
-                  size = Set.size $ minCut edges nodes (Map.fromList $ map (id &&& Set.singleton) nodes) Set.empty maxBound
-              in V $ size * (length nodes - size)
+part1 input = V $ size * (length nodes - size)
+    where edges = foldr (Map.unionWith Map.union . lineToEdges) Map.empty input
+          nodes = Map.keys edges
+          size = Set.size $ minCut edges nodes (Map.fromList $ map (id &&& Set.singleton) nodes) Set.empty maxBound

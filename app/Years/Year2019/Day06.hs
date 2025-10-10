@@ -25,6 +25,6 @@ bfs neighbors ((object, len):xs) seen = bfs neighbors (xs ++ map (, len + 1) nex
     where next = filter (`Set.notMember` seen) $ neighbors Map.! object
 
 part2 :: Solution
-part2 input = let orbits = parseInput input
-                  neighbors = Map.unionWith (nub .: (++)) orbits $ Map.fromList $ concatMap (\(a, bs) -> map (, [a]) bs) $ Map.toList orbits
-              in V $ bfs neighbors [("YOU", -2)] (Set.singleton "YOU")
+part2 input = V $ bfs neighbors [("YOU", -2)] (Set.singleton "YOU")
+    where orbits = parseInput input
+          neighbors = Map.unionWith (nub .: (++)) orbits $ Map.fromList $ concatMap (\(a, bs) -> map (, [a]) bs) $ Map.toList orbits

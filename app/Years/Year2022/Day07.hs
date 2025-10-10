@@ -34,6 +34,6 @@ part1 :: Solution
 part1 = V . sum . filter (<= 100000) . getSizes
 
 part2 :: Solution
-part2 input = let sizes = getSizes input
-                  minSize = maximum sizes - 40000000
-              in V $ minimum $ filter (>= minSize) sizes
+part2 input = V $ minimum $ filter (>= minSize) sizes
+    where sizes = getSizes input
+          minSize = maximum sizes - 40000000

@@ -10,8 +10,8 @@ getSurface :: Set Vec3 -> Vec3 -> Int
 getSurface cubes cube = sum [1 | f <- [first3, second3, third3], d <- [-1, 1], f (+d) cube `Set.notMember` cubes]
 
 part1 :: Solution
-part1 input = let cubes = map (triple . map read . splitOn ",") input
-              in V $ sumOn' (getSurface $ Set.fromList cubes) cubes
+part1 input = V $ sumOn' (getSurface $ Set.fromList cubes) cubes
+    where cubes = map (triple . map read . splitOn ",") input
 
 
 getExteriorSurface :: Set Vec3 -> (Vec3, Vec3) -> [Vec3] -> Set Vec3 -> Int
@@ -22,8 +22,8 @@ getExteriorSurface lava bounds@((minX, minY, minZ), (maxX, maxY, maxZ)) (pos:ps)
                                                                  Set.notMember p visited]
 
 part2 :: Solution
-part2 input = let cubes = map (triple . map read . splitOn ",") input
-                  (xs, ys, zs) = unzip3 cubes
-                  bounds = ((minimum xs - 1, minimum ys - 1, minimum zs - 1), (maximum xs + 1, maximum ys + 1, maximum zs + 1))
-                  start = fst bounds
-              in V $ getExteriorSurface (Set.fromList cubes) bounds [start] (Set.singleton start)
+part2 input = V $ getExteriorSurface (Set.fromList cubes) bounds [start] (Set.singleton start)
+    where cubes = map (triple . map read . splitOn ",") input
+          (xs, ys, zs) = unzip3 cubes
+          bounds = ((minimum xs - 1, minimum ys - 1, minimum zs - 1), (maximum xs + 1, maximum ys + 1, maximum zs + 1))
+          start = fst bounds

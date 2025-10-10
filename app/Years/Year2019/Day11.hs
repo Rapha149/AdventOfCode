@@ -20,5 +20,5 @@ part1 :: Solution
 part1 = V . Map.size . paint Map.empty (0, 0) (0, 1) . parseState
 
 part2 :: Solution
-part2 input = let painted = Map.keysSet $ Map.filter id $ paint (Map.singleton (0, 0) True) (0, 0) (0, -1) $ parseState input
-              in OCR painted
+part2 input = OCR painted
+    where painted = Map.keysSet $ Map.filter id $ paint (Map.singleton (0, 0) True) (0, 0) (0, -1) $ parseState input

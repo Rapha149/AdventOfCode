@@ -57,9 +57,9 @@ getHumanValue monkeys path monkey value = getHumanValue monkeys path next $ valu
                    _ -> error "Unknown operator."
 
 part2 :: Solution
-part2 input = let monkeys = parseInput input
-                  path = fromJust $ getHumanPath monkeys "root"
-                  (startHuman, startMonkey) = case monkeys Map.! "root" of
-                                                   O m1 m2 _ -> if Set.member m1 path then (m1, m2) else (m2, m1)
-                                                   N _ -> error "Invalid root nonkey."
-              in V $ getHumanValue monkeys path startHuman $ fromIntegral $ getResult monkeys startMonkey
+part2 input = V $ getHumanValue monkeys path startHuman $ fromIntegral $ getResult monkeys startMonkey
+    where monkeys = parseInput input
+          path = fromJust $ getHumanPath monkeys "root"
+          (startHuman, startMonkey) = case monkeys Map.! "root" of
+                                           O m1 m2 _ -> if Set.member m1 path then (m1, m2) else (m2, m1)
+                                           N _ -> error "Invalid root nonkey."

@@ -67,7 +67,7 @@ part1 :: Solution
 part1 = V . getHeightAfter 2022 . hd
 
 part2 :: Solution
-part2 input = let jets = hd input
-                  (pre, loopLen, loopHeight) = findLoop jets initState 0 Map.empty
-                  (q, r) = (1000000000000 - pre) `divMod` loopLen
-              in V $ getHeightAfter (pre + r) jets + q * loopHeight
+part2 input = V $ getHeightAfter (pre + r) jets + q * loopHeight
+    where jets = hd input
+          (pre, loopLen, loopHeight) = findLoop jets initState 0 Map.empty
+          (q, r) = (1000000000000 - pre) `divMod` loopLen

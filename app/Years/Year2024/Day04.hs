@@ -16,6 +16,10 @@ count = sum . map (\s -> countLine s + countLine (reverse s))
           countLine ('X':'M':'A':'S':cs) = 1 + countLine cs
           countLine (_:cs) = countLine cs
 
+part1 :: Solution
+part1 input = V $ count input + count (transpose input) + count (diagonals False input) + count (diagonals True input)
+
+
 countX :: [String] -> Int
 countX (l1:l2:l3:ls) = countXLines l1 l2 l3 + countXLines (reverse l1) (reverse l2) (reverse l3) + countX (l2:l3:ls)
     where countXLines :: String -> String -> String -> Int
@@ -24,9 +28,6 @@ countX (l1:l2:l3:ls) = countXLines l1 l2 l3 + countXLines (reverse l1) (reverse 
           countXLines (_:cs1) (_:cs2) (_:cs3) = countXLines cs1 cs2 cs3
           countXLines _ _ _ = error "Number of characters don't match."
 countX _  = 0
-
-part1 :: Solution
-part1 input = V $ count input + count (transpose input) + count (diagonals False input) + count (diagonals True input)
 
 part2 :: Solution
 part2 input = V $ countX input + countX (transpose input)

@@ -45,5 +45,5 @@ part1 :: Solution
 part1 = V . foldl (\acc v -> acc * 10 + v) 0 . getResult 100 . map digitToInt . hd
 
 part2 :: Solution
-part2 input = let ints = map digitToInt $ hd input
-              in V $ product $ take 2 $ getResult 10000000 $ ints ++ [maximum ints + 1 .. 1000000]
+part2 input = V $ product $ take 2 $ getResult 10000000 $ ints ++ [maximum ints + 1 .. 1000000]
+    where ints = map digitToInt $ hd input

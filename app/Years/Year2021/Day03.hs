@@ -17,8 +17,8 @@ toDec :: String -> Int
 toDec = foldl (\acc v -> acc * 2 + digitToInt v) 0
 
 part1 :: Solution
-part1 input = let bits = map mostCommon $ transpose input
-              in V $ toDec bits * toDec (map notC bits)
+part1 input = V $ toDec bits * toDec (map notC bits)
+    where bits = map mostCommon $ transpose input
 
 
 getRating2 :: (Char -> Char) -> [String] -> String

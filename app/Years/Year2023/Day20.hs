@@ -8,11 +8,6 @@ import qualified Data.Map.Strict as Map
 
 data Module = Broadcaster [String] | FlipFlop Bool [String] | Conjunction (Map String Bool) [String]
 
-getOutputs :: Module -> [String]
-getOutputs (Broadcaster out) = out
-getOutputs (FlipFlop _ out) = out
-getOutputs (Conjunction _ out) = out
-
 parseInput :: [String] -> Map String Module
 parseInput input = Map.foldrWithKey (uncurry Map.insert .: toModule) Map.empty outputs
     where outputs = Map.fromList $ map (second (splitOn ", ") . pair . splitOn " -> ") input
@@ -21,6 +16,21 @@ parseInput input = Map.foldrWithKey (uncurry Map.insert .: toModule) Map.empty o
           toModule ('%':name) out = (name, FlipFlop False out)
           toModule ('&':name) out = (name, Conjunction (Map.fromList $ map ((, False) . dropWhile (`elem` "%&")) $ Map.keys $ Map.filter (elem name) outputs) out)
           toModule _ _ = error "Invalid module."
+
+countPulses :: Int -> Map String Module -> (Int, Int)
+countPulses 0 _ = (0, 0)
+countPulses n modules = onBoth (+) counts $ countPulses (n - 1) modules'
+    where (modules', pulses) = sendPulse modules [("button", "broadcaster", False)]
+          counts = both (Map.foldr (+) 0) $ Map.partitionWithKey (const . snd) pulses
+
+part1 :: Solution
+part1 = V . uncurry (*) . countPulses 1000 . parseInput
+
+
+getOutputs :: Module -> [String]
+getOutputs (Broadcaster out) = out
+getOutputs (FlipFlop _ out) = out
+getOutputs (Conjunction _ out) = out
 
 sendPulse :: Map String Module -> [(String, String, Bool)] -> (Map String Module, Map (String, Bool) Int)
 sendPulse modules [] = (modules, Map.empty)
@@ -32,12 +42,6 @@ sendPulse modules ((source, dest, high):ps) = second (Map.insertWith (+) (source
                                  (Just (Conjunction inputs out)) -> let newInputs = Map.insert source high inputs
                                                                     in (Map.insert dest (Conjunction newInputs out) modules, out, not $ Map.foldr (&&) True newInputs)
           next = map (dest,, high') ps'
-
-countPulses :: Int -> Map String Module -> (Int, Int)
-countPulses 0 _ = (0, 0)
-countPulses n modules = onBoth (+) counts $ countPulses (n - 1) modules'
-    where (modules', pulses) = sendPulse modules [("button", "broadcaster", False)]
-          counts = both (Map.foldr (+) 0) $ Map.partitionWithKey (const . snd) pulses
 
 getVitalConjunctions :: Map String Module -> (String, [String])
 getVitalConjunctions modules = (output, Map.keys $ Map.filter (elem output . getOutputs) modules)
@@ -55,10 +59,7 @@ findLoops modules output cons n loops = let loops' = foldr testLoop loops filter
                                              in if n == loop * 2 then Map.insert name (loop, False) loops'
                                                                  else error $ "Loop did not match for " <> name
 
-part1 :: Solution
-part1 = V . uncurry (*) . countPulses 1000 . parseInput
-
 part2 :: Solution
-part2 input = let modules = parseInput input
-                  (output, cons) = getVitalConjunctions modules
-              in V $ foldr lcm 1 $ findLoops modules output cons 1 Map.empty
+part2 input = V $ foldr lcm 1 $ findLoops modules output cons 1 Map.empty
+    where modules = parseInput input
+          (output, cons) = getVitalConjunctions modules

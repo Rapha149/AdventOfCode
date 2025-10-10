@@ -22,10 +22,10 @@ getResult input = (concatMap fst foods, foldr refinePossibleIngredients initPoss
           refinePossibleIngredients (is, as) mappings = foldr (Map.adjust (Set.intersection $ Set.fromList is)) mappings as
 
 part1 :: Solution
-part1 input = let (ingredients, possible) = getResult input
-                  counts = Map.fromListWith (+) $ map (, 1) ingredients
-                  withAllergens = Set.unions possible
-              in V $ sum $ Map.withoutKeys counts withAllergens
+part1 input = V $ sum $ Map.withoutKeys counts withAllergens
+    where (ingredients, possible) = getResult input
+          counts = Map.fromListWith (+) $ map (, 1) ingredients
+          withAllergens = Set.unions possible
 
 
 determineMappings :: Map Allergen (Set Ingredient) -> Map Allergen Ingredient
@@ -36,6 +36,6 @@ determineMappings possible | null possible = Map.empty
           singleIngredients = Set.fromList $ Map.elems single
 
 part2 :: Solution
-part2 input = let (_, mappings) = getResult input
-                  single = determineMappings mappings
-              in Msg $ intercalate "," $ Map.elems single
+part2 input = Msg $ intercalate "," $ Map.elems single
+    where (_, mappings) = getResult input
+          single = determineMappings mappings

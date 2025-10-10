@@ -40,10 +40,10 @@ totalLoad :: Int -> Rocks -> Int
 totalLoad height = sum . map ((height -) . fst) . Map.keys . Map.filter id
 
 part1 :: Solution
-part1 input = let (height, width, rocks) = parse input
-              in V $ totalLoad height $ roll height width (first (subtract 1)) id rocks
+part1 input = V $ totalLoad height $ roll height width (first (subtract 1)) id rocks
+    where (height, width, rocks) = parse input
 
 part2 :: Solution
-part2 input = let (height, width, rocks) = parse input
-                  (s, r) = detectRepeats (Set.singleton rocks) height width rocks False
-              in V $ totalLoad height $ foldr ($) rocks (replicate (s + (1000000000 - s) `mod` r) (spin height width))
+part2 input = V $ totalLoad height $ foldr ($) rocks (replicate (s + (1000000000 - s) `mod` r) (spin height width))
+    where (height, width, rocks) = parse input
+          (s, r) = detectRepeats (Set.singleton rocks) height width rocks False

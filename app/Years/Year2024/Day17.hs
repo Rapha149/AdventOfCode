@@ -32,6 +32,11 @@ runProgram program registers pointer | pointer >= length program = []
                        6 -> c registers
                        x -> x
 
+part1 :: Solution
+part1 input = Msg $ intercalate "," $ map show $ runProgram program registers 0
+    where (registers, program) = parseInput input
+
+
 findMinA :: Program -> Registers -> Int -> [Int] -> Int
 findMinA program registers i oct | output == program = a
                                  | output == drop (length program - length oct - 1) program = findMinA program registers 0 (i:oct)
@@ -40,10 +45,6 @@ findMinA program registers i oct | output == program = a
           a = sum $ zipWith (\d n -> d * 8 ^ n) (i:oct) idx
           output = runProgram program (registers { a = a }) 0
 
-part1 :: Solution
-part1 input = let (registers, program) = parseInput input
-              in Msg $ intercalate "," $ map show $ runProgram program registers 0
-
 part2 :: Solution
-part2 input = let (registers, program) = parseInput input
-              in V $ findMinA program registers 0 []
+part2 input = V $ findMinA program registers 0 []
+    where (registers, program) = parseInput input

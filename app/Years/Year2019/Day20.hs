@@ -38,9 +38,9 @@ bfs1 grid ((pos, cost):xs) seen = case grid Map.! pos of
     where next = filter (\p -> Set.notMember p seen && Map.member p grid) $ map (onBoth (+) pos) [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 part1 :: Solution
-part1 input = let grid = parseInput input
-                  start = fst $ Map.findMin $ Map.filter (== Start) grid
-              in V $ bfs1 grid [(start, -2)] (Set.singleton start)
+part1 input = V $ bfs1 grid [(start, -2)] (Set.singleton start)
+    where grid = parseInput input
+          start = fst $ Map.findMin $ Map.filter (== Start) grid
 
 
 bfs2 :: Map Vec Tile -> [(Vec, Int, Int)] -> Set (Vec, Int) -> Int
@@ -53,6 +53,6 @@ bfs2 grid ((pos, depth, cost):xs) seen = case grid Map.! pos of
     where next = filter (\p -> Set.notMember (p, depth) seen && Map.member p grid) $ map (onBoth (+) pos) [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 part2 :: Solution
-part2 input = let grid = parseInput input
-                  start = fst $ Map.findMin $ Map.filter (== Start) grid
-              in V $ bfs2 grid [(start, 0, -2)] (Set.singleton (start, 0))
+part2 input = V $ bfs2 grid [(start, 0, -2)] (Set.singleton (start, 0))
+    where grid = parseInput input
+          start = fst $ Map.findMin $ Map.filter (== Start) grid

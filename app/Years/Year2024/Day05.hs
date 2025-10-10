@@ -25,9 +25,9 @@ getMiddle xs = middle xs xs
           middle [] _ = error "Empty list."
 
 part1 :: Solution
-part1 input = let (rules, updates) = parseInput input
-              in V $ sum $ map getMiddle $ filter (\xs -> xs == sortByRules rules xs) updates
+part1 input = V $ sum $ map getMiddle $ filter (\xs -> xs == sortByRules rules xs) updates
+    where (rules, updates) = parseInput input
 
 part2 :: Solution
-part2 input = let (rules, updates) = parseInput input
-              in V $ sum $ map (getMiddle . snd) $ filter (uncurry (/=)) $ map (\xs -> (xs, sortByRules rules xs)) updates
+part2 input = V $ sum $ map (getMiddle . snd) $ filter (uncurry (/=)) $ map (\xs -> (xs, sortByRules rules xs)) updates
+    where (rules, updates) = parseInput input

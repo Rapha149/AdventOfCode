@@ -27,8 +27,8 @@ bfs end obstacles ((pos, prev, path):xs) | pos == end = max (Set.size path) (bfs
     where next = map (, pos, Set.insert pos path) $ filter (\p -> p /= prev && Set.notMember p path && maybe True (== pos) (obstacles Map.!? p)) $ map (onBoth (+) pos) [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
 part1 :: Solution
-part1 input = let (end, obstacles) = parseInput input
-              in V $ bfs end obstacles [((0, 1), (-1, 1), Set.empty)]
+part1 input = V $ bfs end obstacles [((0, 1), (-1, 1), Set.empty)]
+    where (end, obstacles) = parseInput input
 
 
 findJunctions :: Vec -> Vec -> Set Vec -> [(Vec, Vec, Vec, Int)] -> Map Vec [(Vec, Int)] -> (Int, Vec, Vec, Map Vec [(Vec, Int)])
@@ -51,8 +51,8 @@ bfsJunctions end junctions ((pos, prev, path, len):xs) | pos == end = max len $ 
     where next = map (\(p, d) -> (p, pos, Set.insert pos path, len + d)) $ filter (\(p,_) -> p /= prev && Set.notMember p path) $ junctions Map.! pos
 
 part2 :: Solution
-part2 input = let obstacles = Set.fromList [(r, c) | (r, row) <- zip [0..] input, (c, '#') <- zip [0..] row]
-                  start = (0, 1)
-                  end = (length input - 1, length (hd input) - 2)
-                  (extra, jStart, jEnd, junctions) = findJunctions start end obstacles [(start, (-1, 1), start, 0)] Map.empty
-              in V $ extra + bfsJunctions jEnd junctions [(jStart, (0,0), Set.empty, 0)]
+part2 input = V $ extra + bfsJunctions jEnd junctions [(jStart, (0,0), Set.empty, 0)]
+    where obstacles = Set.fromList [(r, c) | (r, row) <- zip [0..] input, (c, '#') <- zip [0..] row]
+          start = (0, 1)
+          end = (length input - 1, length (hd input) - 2)
+          (extra, jStart, jEnd, junctions) = findJunctions start end obstacles [(start, (-1, 1), start, 0)] Map.empty

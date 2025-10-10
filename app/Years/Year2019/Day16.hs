@@ -10,18 +10,18 @@ parse :: [Int] -> Int
 parse = foldl (\acc v -> acc * 10 + v) 0
 
 part1 :: Solution
-part1 input = let list = map digitToInt $ hd input
-                  patterns = [tl $ cycle $ concatMap (replicate i) [0, 1, 0, -1] | i <- [1..length list]]
-              in V $ parse $ take 8 $ foldr ($) list $ replicate 100 (phase1 patterns)
+part1 input = V $ parse $ take 8 $ foldr ($) list $ replicate 100 (phase1 patterns)
+    where list = map digitToInt $ hd input
+          patterns = [tl $ cycle $ concatMap (replicate i) [0, 1, 0, -1] | i <- [1..length list]]
 
 
 phase2 :: [Int] -> [Int]
 phase2 list = buildList list $ sum list
-      where buildList :: [Int] -> Int -> [Int]
-            buildList [] total = [total `mod` 10]
-            buildList (x:xs) total = total `mod` 10 : buildList xs (total - x)
+    where buildList :: [Int] -> Int -> [Int]
+          buildList [] total = [total `mod` 10]
+          buildList (x:xs) total = total `mod` 10 : buildList xs (total - x)
 
 part2 :: Solution
-part2 input = let list = concat $ replicate 10000 $ map digitToInt $ hd input
-                  pos = parse $ take 7 list
-              in V $ parse $ take 8 $ foldr ($) (drop pos list) $ replicate 100 phase2
+part2 input = V $ parse $ take 8 $ foldr ($) (drop pos list) $ replicate 100 phase2
+    where list = concat $ replicate 10000 $ map digitToInt $ hd input
+          pos = parse $ take 7 list

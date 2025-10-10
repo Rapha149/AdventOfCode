@@ -18,11 +18,12 @@ getPossibleGameNumbers (g:gs) = case splitOn ":" g of
     where isGamePossible :: String -> Bool
           isGamePossible = all ((\xs -> read (hd xs) <= config (xs !! 1)) . words) . splitOneOf ",;"
 
-getGamePower :: String -> Int
-getGamePower = Map.foldr (*) 1 . Map.fromListWith max . map ((\xs -> (xs !! 1, read $ hd xs)) . words) . splitOneOf ",;"
-
 part1 :: Solution
 part1 = V . sum . getPossibleGameNumbers
+
+
+getGamePower :: String -> Int
+getGamePower = Map.foldr (*) 1 . Map.fromListWith max . map ((\xs -> (xs !! 1, read $ hd xs)) . words) . splitOneOf ",;"
 
 part2 :: Solution
 part2 = V . sum . map (getGamePower . (!! 1) . splitOn ":")

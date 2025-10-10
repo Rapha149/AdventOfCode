@@ -83,5 +83,5 @@ part1 :: Solution
 part1 = V . getMinEnergy 1 Map.empty . PQ.singleton 0 . parseInput
 
 part2 :: Solution
-part2 input = let newInput = take 3 input ++ ["  #D#C#B#A#", "  #D#B#A#C#"] ++ drop 3 input
-              in V $ getMinEnergy 3 Map.empty $ PQ.singleton 0 $ parseInput newInput
+part2 input = V $ getMinEnergy 3 Map.empty $ PQ.singleton 0 $ parseInput newInput
+    where newInput = take 3 input ++ ["  #D#C#B#A#", "  #D#B#A#C#"] ++ drop 3 input

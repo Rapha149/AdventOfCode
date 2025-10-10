@@ -20,10 +20,10 @@ applyRules maxOccAdj adjacents seats | seats == seats' = Map.size $ Map.filter i
                                      True -> length occAdj <= maxOccAdj
 
 part1 :: Solution
-part1 input = let (_, seats) = parseInput input
-                  adjacents = Map.fromSet (\(r, c) -> [adj | dr <- [-1..1], dc <- [-1..1], (dr, dc) /= (0, 0),
-                                                             let adj = (r + dr, c + dc), Map.member adj seats]) $ Map.keysSet seats
-              in V $ applyRules 3 adjacents seats
+part1 input = V $ applyRules 3 adjacents seats
+    where (_, seats) = parseInput input
+          adjacents = Map.fromSet (\(r, c) -> [adj | dr <- [-1..1], dc <- [-1..1], (dr, dc) /= (0, 0),
+                                                     let adj = (r + dr, c + dc), Map.member adj seats]) $ Map.keysSet seats
 
 
 look :: Map Vec Bool -> Vec -> Vec -> Maybe Vec
@@ -34,7 +34,7 @@ look grid pos dir = case grid Map.!? pos' of
     where pos' = onBoth (+) pos dir
 
 part2 :: Solution
-part2 input = let (grid, seats) = parseInput input
-                  seatSet = Map.keysSet seats
-                  adjacents = Map.fromSet (\seat -> mapMaybe (look grid seat) [(dr, dc) | dr <- [-1..1], dc <- [-1..1], (dr, dc) /= (0, 0)]) seatSet
-              in V $ applyRules 4 adjacents seats
+part2 input = V $ applyRules 4 adjacents seats
+    where (grid, seats) = parseInput input
+          seatSet = Map.keysSet seats
+          adjacents = Map.fromSet (\seat -> mapMaybe (look grid seat) [(dr, dc) | dr <- [-1..1], dc <- [-1..1], (dr, dc) /= (0, 0)]) seatSet

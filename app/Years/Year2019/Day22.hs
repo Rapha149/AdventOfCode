@@ -22,11 +22,11 @@ shuffle xs (Cut n) = after ++ before
 shuffle xs (DealIncrement n) = map fst $ sortOn snd $ zip xs $ iterate ((`mod` length xs) . (+ n)) 0
 
 part1 :: Solution
-part1 raw = let (amount, input) = getExtraInt 10007 raw
-                shuffles = parseInput input
-                cards = foldl shuffle [0..amount - 1] shuffles
-            in if raw == input then V $ fromJust $ 2019 `elemIndex` cards
-                               else Msg $ unwords $ map show cards
+part1 raw | raw == input = V $ fromJust $ 2019 `elemIndex` cards
+          | otherwise = Msg $ unwords $ map show cards
+    where (amount, input) = getExtraInt 10007 raw
+          shuffles = parseInput input
+          cards = foldl shuffle [0..amount - 1] shuffles
 
 
 -- Part 2 solution explanation: https://www.reddit.com/r/adventofcode/comments/ee56wh/comment/fbr0vjb/
@@ -109,9 +109,9 @@ getCardInPos amount (Cut n:xs) pos = getCardInPos amount xs $ (pos - n) `mod` am
 getCardInPos amount (DealIncrement n:xs) pos = getCardInPos amount xs $ mulMod pos n amount
 
 part2 :: Solution
-part2 input = let amount = 119315717514047
-                  iterations = 101741582076661
-                  shuffles = parseInput input
-                  compacted = compact amount shuffles
-                  iterated = exponentiate amount compacted [] $ amount - 1 - iterations
-              in V $ getCardInPos amount iterated 2020
+part2 input = V $ getCardInPos amount iterated 2020
+    where amount = 119315717514047
+          iterations = 101741582076661
+          shuffles = parseInput input
+          compacted = compact amount shuffles
+          iterated = exponentiate amount compacted [] $ amount - 1 - iterations

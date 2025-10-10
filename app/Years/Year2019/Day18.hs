@@ -44,9 +44,9 @@ bfs1 graph queue seen | null queue = error "No solution found."
           next = [(cost + cost', (node', clearBit missingKeys node')) | (node', cost', doors) <- graph Map.! node, doors .&. missingKeys == 0, testBit missingKeys node']
 
 part1 :: Solution
-part1 input = let graph = buildGraph $ parseInput input
-                  keys = foldl setBit 0 $ Map.keys $ Map.delete 27 graph
-              in V $ bfs1 graph (PQ.singleton 0 (27, keys)) Set.empty
+part1 input = V $ bfs1 graph (PQ.singleton 0 (27, keys)) Set.empty
+    where graph = buildGraph $ parseInput input
+          keys = foldl setBit 0 $ Map.keys $ Map.delete 27 graph
 
 
 bfs2 :: Graph -> PQueue Int (Seq Int, Word32) -> Set (Seq Int, Word32) -> Int
@@ -62,10 +62,10 @@ bfs2 graph queue seen | null queue = error "No solution found."
                             (node', cost', doors) <- graph Map.! node, doors .&. missingKeys == 0, testBit missingKeys node']
 
 part2 :: Solution
-part2 input = let grid = parseInput input
-                  (x, y) = fst $ Map.findMin $ Map.filter (== '@') grid
-                  graph = buildGraph $ foldr (uncurry Map.insert) grid [((x, y), '#'),
-                                                                        ((x - 1, y), '#'), ((x + 1, y), '#'), ((x, y - 1), '#'), ((x, y + 1), '#'),
-                                                                        ((x - 1, y - 1), '@'), ((x + 1, y - 1), '@'), ((x - 1, y + 1), '@'), ((x + 1, y + 1), '@')]
-                  (keys, robots) = partition (<= 26) $ Map.keys graph
-              in V $ bfs2 graph (PQ.singleton 0 (Seq.fromList robots, foldl setBit 0 keys)) Set.empty
+part2 input = V $ bfs2 graph (PQ.singleton 0 (Seq.fromList robots, foldl setBit 0 keys)) Set.empty
+    where grid = parseInput input
+          (x, y) = fst $ Map.findMin $ Map.filter (== '@') grid
+          graph = buildGraph $ foldr (uncurry Map.insert) grid [((x, y), '#'),
+                                                                ((x - 1, y), '#'), ((x + 1, y), '#'), ((x, y - 1), '#'), ((x, y + 1), '#'),
+                                                                ((x - 1, y - 1), '@'), ((x + 1, y - 1), '@'), ((x - 1, y + 1), '@'), ((x + 1, y + 1), '@')]
+          (keys, robots) = partition (<= 26) $ Map.keys graph
