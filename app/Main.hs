@@ -9,9 +9,11 @@ import Util.OCR
 import Years.SelectYear
 
 import Text.Printf
+import Data.List.Extra
 import Data.Time.Clock.POSIX
 import Control.Monad
 import System.Clipboard
+import Control.DeepSeq
 import System.Environment
 import System.Directory
 import System.IO
@@ -28,46 +30,72 @@ run :: Args -> IO ()
 run (ArgError err) = abort $ "Wrong arguments: " <> err
 run Options {..} = do
     input <- getInput year day source
-    putStrLn $ printf "Calculating result for year %d, day %d, part %d..." year day part
-    startTime <- getPOSIXTime
-    answer <- handleResult $ selectYear year day part $ extra ++ lines input
-    when (MeasureTime `elem` flags) $ printTimeDiff startTime
+    when (null $ trim input) $ abort "The input is empty."
+
+    let runOnce silent = do
+            input' <- evaluate $ force $ extra ++ lines (trim input)
+            start <- getPOSIXTime
+            result <- handleResult silent $ selectYear year day part input'
+            result `deepseq` do
+                end <- getPOSIXTime
+                return (result, round $ (end - start) * 1000000 :: Int)
+
+    printf "Calculating result for year %d, day %d, part %d...\n" year day part
+    (answer, diff) <- runOnce False
+    when (MeasureTime `elem` flags) $ printf "\nExecution time: %s\n" $ formatTime diff
     when (AutoAnswer `elem` flags) $ autoAnswer year day part answer
     when (CheckAnswer `elem` flags && AutoAnswer `notElem` flags) $ checkAnswer year day part answer
 
-handleResult :: Result -> IO String
-handleResult = \case
+    case avgRuns of
+         Just n | n > 1 -> do
+             putStrLn "\nCalculating average execution time..."
+             (times, maxLength) <- foldM (\(acc, maxLength) i -> do
+                    time <- snd <$> runOnce True
+                    let acc' = time : acc
+                        avg = sum acc' `div` i
+                        line = printf "Run %d/%d: %s (current average: %s)" i n (formatTime time) (formatTime avg)
+                    putStr $ '\r' : line
+                    hFlush stdout
+                    return (acc', max maxLength $ length line)
+                 ) ([], 0) [1..n]
+             let avg = sum times `div` n
+                 line :: String = printf "Average execution time of %d runs: %s" n $ formatTime avg
+             printf "\r%s%s\n" line $ replicate (maxLength - length line) ' '
+         _ -> return ()
+
+formatTime :: Int -> String
+formatTime micros | seconds > 0 = printf "%02d:%02d.%03d" minutes (seconds `mod` 60) (millis `mod` 1000)
+                  | otherwise = printf "%d.%03d ms" millis (micros `mod` 1000)
+    where millis = micros `div` 1000
+          seconds = millis `div` 1000
+          minutes = seconds `div` 60
+
+handleResult :: Bool -> Result -> IO String
+handleResult silent = \case
     V value -> do
-        putStrLn $ printf "Result: %d" value
+        unless silent $ printf "Result: %d\n" value
         return $ show value
     VMsg value msg -> do
-        putStrLn $ printf "Result: %d\n\n%s" value msg
+        unless silent $ printf "Result: %d\n\n%s\n" value msg
         return $ show value
     RawOCR rows -> do
         let (ocr, result) = parseOCR rows
-        putStrLn $ printf "OCR text:\n%s\n" ocr
+        unless silent $ printf "OCR text:\n%s\n\n" ocr
         case result of
              Parsed str -> do
-                 putStrLn $ printf "Result: %s" str
+                 unless silent $ printf "Result: %s\n" str
                  return str
              OCRError err -> do
                  abort $ printf "Error while parsing ocr: %s" err
                  return ""
     OCR grid -> let ((minX, maxX), (minY, maxY)) = getBounds $ Set.toList grid
-                in handleResult $ RawOCR [[Set.member (x, y) grid | x <- [minX..maxX]] | y <- [minY..maxY]]
+                in handleResult silent $ RawOCR [[Set.member (x, y) grid | x <- [minX..maxX]] | y <- [minY..maxY]]
     Msg msg -> do
-        putStrLn msg
+        unless silent $ putStrLn msg
         return msg
     Error err -> do
         abort err
         return ""
-
-printTimeDiff :: POSIXTime -> IO ()
-printTimeDiff start = do
-    end <- getPOSIXTime
-    let diff :: Int
-        diff = round $ (end - start) * 1000
-    putStrLn $ printf "\nExecution time: %02d.%02d.%03d" (diff `div` 60000) ((diff `div` 1000) `mod` 60) (diff `mod` 1000)
 
 getInput :: Int -> Int -> Source -> IO String
 getInput year day File = loadFileInput year day
@@ -104,7 +132,7 @@ loadFileInput year day = do
              writeFile path input
              pure input
          Left _ -> do
-             putStrLn $ printf "Failed to read the file: \"%s\"." path
+             printf "Failed to read the file: \"%s\".\n" path
              exitFailure
 
 main :: IO ()
