@@ -20,8 +20,8 @@ isIntersecting areaMin areaMax (((px1, py1), (vx1, vy1)), ((px2, py2), (vx2, vy2
           point = onBoth (+) (px1, py1) $ both (*a) (vx1, vy1)
 
 part1 :: Solution
-part1 raw = V $ length $ filter (isIntersecting areaMin areaMax) pairs
-    where ((areaMin, areaMax), input) = getExtraInts 2 (pair . map read) (200000000000000, 400000000000000) raw
+part1 raw = V $ length $ filter (isIntersecting (fromIntegral areaMin) (fromIntegral areaMax)) pairs
+    where ((areaMin, areaMax), input) = getExtraInts 2 pair (200000000000000, 400000000000000) raw
           stones = map (pair . map (pair . take 2 . map read . splitOn ", ") . splitOn " @ ") input
           pairs = [(s1, s2) | (s1:xs) <- tails stones, s2 <- xs]
 

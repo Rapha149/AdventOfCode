@@ -14,8 +14,8 @@ getExtra :: (String -> Bool) -> Int -> ([String] -> a) -> a -> [String] -> (a, [
 getExtra test n get def input | test $ hd input = (get $ take n input, drop n input)
                               | otherwise = (def, input)
 
-getExtraInts :: Int -> ([String] -> a) -> a -> [String] -> (a, [String])
-getExtraInts = getExtra (all isDigit)
+getExtraInts :: Int -> ([Int] -> a) -> a -> [String] -> (a, [String])
+getExtraInts n get = getExtra (all isDigit) n (get . map read)
 
 getExtra1 :: (String -> Bool) -> (String -> a) -> a -> [String] -> (a, [String])
 getExtra1 test get = getExtra test 1 (get . hd)

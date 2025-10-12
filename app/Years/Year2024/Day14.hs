@@ -14,7 +14,7 @@ getQuadrant mx my (x, y) | x == mx || y == my = Nothing
 
 part1 :: Solution
 part1 raw = V $ product $ map length $ group $ sort $ filter (/= Nothing) $ map (getQuadrant (width `div` 2) (height `div` 2)) moved
-    where ((width, height), input) = getExtraInts 2 (pair . map read) (101, 103) raw
+    where ((width, height), input) = getExtraInts 2 pair (101, 103) raw
           robots = map (pair . map (pair . map read . splitOn "," . drop 2) . words) input
           moved = map (fst . foldr (.) id (replicate 100 (move width height))) robots
 
