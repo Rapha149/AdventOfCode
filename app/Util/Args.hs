@@ -4,7 +4,7 @@ import Data.Char
 import Data.List.Extra
 
 data Source = File | Stdin | FileStdin | Clipboard | WaylandClipboard
-data Flag = MeasureTime | AutoAnswer | CheckAnswer deriving Eq
+data Flag = MeasureTime | NoResult | AutoAnswer | CheckAnswer deriving Eq
 data Args = ArgError String | Options { flags :: [Flag], avgRuns :: Maybe Int, year :: Int, day :: Int, part :: Int, source :: Source, extra :: [String]}
 
 parseArgs :: [String] -> Args
@@ -12,9 +12,10 @@ parseArgs ("--avg":n:xs) | all isDigit n = case parseArgs xs of
                                                 Options {..} -> Options { avgRuns = Just $ read n, .. }
                                                 err -> err
                          | otherwise = ArgError "Provide a positive number after --avg."
-parseArgs (('-':flagOpt):xs) | flagOpt `notElem` ["t", "a", "ca"] = ArgError "Invalid flag argument."
+parseArgs (('-':flagOpt):xs) | flagOpt `notElem` ["t", "nr", "a", "ca"] = ArgError "Invalid flag argument."
                              | otherwise = let flag = case flagOpt of
                                                            "t" -> MeasureTime
+                                                           "nr" -> NoResult
                                                            "a" -> AutoAnswer
                                                            "ca" -> CheckAnswer
                                                            _ -> error "Unknown flag argument."

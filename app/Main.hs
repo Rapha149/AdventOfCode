@@ -10,6 +10,7 @@ import Years.SelectYear
 
 import Text.Printf
 import Data.List.Extra
+import Data.Tuple.Extra
 import Data.Time.Clock.POSIX
 import Control.Monad
 import System.Clipboard
@@ -40,15 +41,17 @@ run Options {..} = do
                 end <- getPOSIXTime
                 return (result, round $ (end - start) * 1000000 :: Int)
 
-    printf "Calculating result for year %d, day %d, part %d...\n" year day part
-    (answer, diff) <- runOnce False
-    when (MeasureTime `elem` flags) $ printf "\nExecution time: %s\n" $ formatTime diff
-    when (AutoAnswer `elem` flags) $ autoAnswer year day part answer
-    when (CheckAnswer `elem` flags && AutoAnswer `notElem` flags) $ checkAnswer year day part answer
+    unless (NoResult `elem` flags) $ do
+        printf "Calculating result for year %d, day %d, part %d...\n" year day part
+        (answer, diff) <- runOnce False
+        when (MeasureTime `elem` flags) $ printf "\nExecution time: %s\n" $ formatTime diff
+        when (AutoAnswer `elem` flags) $ autoAnswer year day part answer
+        when (CheckAnswer `elem` flags && AutoAnswer `notElem` flags) $ checkAnswer year day part answer
 
     case avgRuns of
          Just n | n > 1 -> do
-             putStrLn "\nCalculating average execution time..."
+             unless (NoResult `elem` flags) $ putStrLn ""
+             putStrLn "Calculating average execution time..."
              (times, maxLength) <- foldM (\(acc, maxLength) i -> do
                     time <- snd <$> runOnce True
                     let acc' = time : acc
@@ -59,8 +62,10 @@ run Options {..} = do
                     return (acc', max maxLength $ length line)
                  ) ([], 0) [1..n]
              let avg = sum times `div` n
-                 line :: String = printf "Average execution time of %d runs: %s" n $ formatTime avg
+                 (mn, mx) = (minimum &&& maximum) times
+                 line :: String = printf "Execution time of %d runs:" n
              printf "\r%s%s\n" line $ replicate (maxLength - length line) ' '
+             printf "    average: %s\n    min:     %s\n    max:     %s\n" (formatTime avg) (formatTime mn) (formatTime mx)
          _ -> return ()
 
 formatTime :: Int -> String
