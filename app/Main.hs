@@ -34,7 +34,7 @@ run Options {..} = do
     when (null $ trim input) $ abort "The input is empty."
 
     let runOnce silent = do
-            input' <- evaluate $ force $ extra ++ lines (trim input)
+            input' <- evaluate $ force $ extra ++ dropWhileEnd null (lines input)
             start <- getPOSIXTime
             result <- handleResult silent $ selectYear year day part input'
             result `deepseq` do
@@ -49,7 +49,7 @@ run Options {..} = do
         when (CheckAnswer `elem` flags && AutoAnswer `notElem` flags) $ checkAnswer year day part answer
 
     case avgRuns of
-         Just n | n > 1 -> do
+         Just n | n > 0 -> do
              unless (NoResult `elem` flags) $ putStrLn ""
              putStrLn "Calculating average execution time..."
              (times, maxLength) <- foldM (\(acc, maxLength) i -> do
@@ -62,10 +62,12 @@ run Options {..} = do
                     return (acc', max maxLength $ length line)
                  ) ([], 0) [1..n]
              let avg = sum times `div` n
-                 (mn, mx) = (minimum &&& maximum) times
+                 sorted = sort times
+                 median = (sorted !! (n `div` 2) + sorted !! ((n + 1) `div` 2)) `div` 2
+                 (mn, mx) = (hd &&& lst) sorted
                  line :: String = printf "Execution time of %d runs:" n
              printf "\r%s%s\n" line $ replicate (maxLength - length line) ' '
-             printf "    average: %s\n    min:     %s\n    max:     %s\n" (formatTime avg) (formatTime mn) (formatTime mx)
+             printf "    average: %s\n    median:  %s\n    min:     %s\n    max:     %s\n" (formatTime avg) (formatTime median) (formatTime mn) (formatTime mx)
          _ -> return ()
 
 formatTime :: Int -> String
