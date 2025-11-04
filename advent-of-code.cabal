@@ -226,6 +226,7 @@ executable advent-of-code
         monad-loops,
         process,
         regex-compat,
+        regex-pcre,
         regex-tdfa,
         simple-vec3,
         split,
