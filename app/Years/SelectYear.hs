@@ -1,6 +1,7 @@
 module Years.SelectYear (selectYear) where
 
 import Util.Util
+import qualified Years.Year2017 as Y17
 import qualified Years.Year2018 as Y18
 import qualified Years.Year2019 as Y19
 import qualified Years.Year2020 as Y20
@@ -11,6 +12,7 @@ import qualified Years.Year2024 as Y24
 
 selectYear :: Int -> Int -> Int -> Solution
 selectYear year = case year of
+    2017 -> Y17.selectDay
     2018 -> Y18.selectDay
     2019 -> Y19.selectDay
     2020 -> Y20.selectDay
