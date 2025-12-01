@@ -9,6 +9,7 @@ import qualified Years.Year2021 as Y21
 import qualified Years.Year2022 as Y22
 import qualified Years.Year2023 as Y23
 import qualified Years.Year2024 as Y24
+import qualified Years.Year2025 as Y25
 
 selectYear :: Int -> Int -> Int -> Solution
 selectYear year = case year of
@@ -20,4 +21,5 @@ selectYear year = case year of
     2022 -> Y22.selectDay
     2023 -> Y23.selectDay
     2024 -> Y24.selectDay
+    2025 -> Y25.selectDay
     _ -> const $ const $ const $ Error "Unknown year."

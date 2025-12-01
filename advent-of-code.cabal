@@ -230,7 +230,20 @@ executable advent-of-code
         Years.Year2024.Day22,
         Years.Year2024.Day23,
         Years.Year2024.Day24,
-        Years.Year2024.Day25
+        Years.Year2024.Day25,
+        Years.Year2025,
+        Years.Year2025.Day01,
+        Years.Year2025.Day02,
+        Years.Year2025.Day03,
+        Years.Year2025.Day04,
+        Years.Year2025.Day05,
+        Years.Year2025.Day06,
+        Years.Year2025.Day07,
+        Years.Year2025.Day08,
+        Years.Year2025.Day09,
+        Years.Year2025.Day10,
+        Years.Year2025.Day11,
+        Years.Year2025.Day12
 
     build-depends:
         base,
