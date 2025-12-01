@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Util.Http where
+module Util.Http (fetchInput, autoAnswer, checkAnswer) where
 
 import Util.Util
 import Data.List.Extra
@@ -19,45 +19,46 @@ import qualified Configuration.Dotenv as Dotenv
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as L8
 
-sessionCookie :: IO String
-sessionCookie = do
+getEnvVar :: String -> IO String
+getEnvVar var = do
     catchIOError (Dotenv.loadFile Dotenv.defaultConfig) (\_ -> putStrLn "Warning: .env not found.")
-    cookie <- lookupEnv "COOKIE"
+    cookie <- lookupEnv var
     case cookie of
         Just session -> return session
         Nothing -> do
-            hPutStrLn stderr "COOKIE environment variable missing."
+            hPutStrLn stderr $ var <> " environment variable missing."
             exitFailure
+
+getHttpResponse :: Request -> IO (Int, String)
+getHttpResponse initReq = do
+    session <- getEnvVar "SESSION_COOKIE"
+    userAgent <- getEnvVar "USER_AGENT"
+    let req = initReq { requestHeaders = requestHeaders initReq <> [(hCookie, BS.pack $ "session=" <> session),
+                                                                    (hUserAgent, BS.pack userAgent)] }
+    manager <- newManager tlsManagerSettings
+    response <- httpLbs req manager
+    return (statusCode $ responseStatus response, L8.unpack $ responseBody response)
 
 fetchInput :: Int -> Int -> IO String
 fetchInput year day = do
-    session <- sessionCookie
-    manager <- newManager tlsManagerSettings
-    initReq <- parseRequest $ printf "https://adventofcode.com/%d/day/%d/input" year day
-    let req = initReq { requestHeaders = [(hCookie, BS.pack $ "session=" <> session)] }
-    response <- httpLbs req manager
-    let body = L8.unpack $ responseBody response
-    case statusCode $ responseStatus response of
+    req <- parseRequest $ printf "https://adventofcode.com/%d/day/%d/input" year day
+    (code, body) <- getHttpResponse req
+    case code of
         200 -> return body
         400 -> do
             hPutStrLn stderr $ printf "[FetchInput] Server responded with 400 is your session cookie still valid? (%s)" $ trim body
             exitFailure
-        code -> do
+        _ -> do
             hPutStrLn stderr $ printf "[FetchInput] Code %d: %s" code body
             exitFailure
 
 autoAnswer :: Int -> Int -> Int -> String -> IO ()
 autoAnswer year day part answer = do
-    session <- sessionCookie
-    manager <- newManager tlsManagerSettings
-    initReq <- parseRequest $ printf "https://adventofcode.com/%d/day/%d/answer" year day
-    let req = initReq { method = "POST",
-                        requestHeaders = [(hCookie, BS.pack $ "session=" <> session),
-                                          (hContentType, "application/x-www-form-urlencoded")],
-                        requestBody = RequestBodyBS (BS.pack $ printf "level=%d&answer=%s" part answer) }
-    response <- httpLbs req manager
-    let body = L8.unpack $ responseBody response
-    case statusCode $ responseStatus response of
+    req <- parseRequest $ printf "https://adventofcode.com/%d/day/%d/answer" year day
+    (code, body) <- getHttpResponse $ req { method = "POST",
+                                            requestHeaders = [(hContentType, "application/x-www-form-urlencoded")],
+                                            requestBody = RequestBodyBS (BS.pack $ printf "level=%d&answer=%s" part answer) }
+    case code of
         200 -> let tags = parseTags body
                    text = trim $ innerText $ takeWhile (~/= ("</main>" :: String)) $ drop 1 $ dropWhile (~/= ("<main>" :: String)) tags
                    prefix = hd $ splitOn "  " text
@@ -68,19 +69,15 @@ autoAnswer year day part answer = do
         400 -> do
             hPutStrLn stderr $ printf "[AutoAnswer] Server responded with 400 is your session cookie still valid? (%s)" $ trim body
             exitFailure
-        code -> do
+        _ -> do
             hPutStrLn stderr $ printf "[AutoAnswer] Code %d: %s" code body
             exitFailure
 
 checkAnswer :: Int -> Int -> Int -> String -> IO ()
 checkAnswer year day part answer = do
-    session <- sessionCookie
-    manager <- newManager tlsManagerSettings
-    initReq <- parseRequest $ printf "https://adventofcode.com/%d/day/%d" year day
-    let req = initReq { requestHeaders = [(hCookie, BS.pack $ "session=" <> session)] }
-    response <- httpLbs req manager
-    let body = L8.unpack $ responseBody response
-    case statusCode $ responseStatus response of
+    req <- parseRequest $ printf "https://adventofcode.com/%d/day/%d" year day
+    (code, body) <- getHttpResponse req
+    case code of
         200 -> let answers = map lst $ body =~ ("<p>Your puzzle answer was <code>([^<]+)</code>.</p>" :: String)
                in putStrLn $ "\n[CheckAnswer] " <> case (== answer) <$> answers !? (part - 1) of
                                                         Just True -> "That's the right answer!"
@@ -89,6 +86,6 @@ checkAnswer year day part answer = do
         400 -> do
             hPutStrLn stderr $ printf "[CheckAnswer] Server responded with 400 is your session cookie still valid? (%s)" $ trim body
             exitFailure
-        code -> do
+        _ -> do
             hPutStrLn stderr $ printf "[CheckAnswer] Code %d: %s" code body
             exitFailure
