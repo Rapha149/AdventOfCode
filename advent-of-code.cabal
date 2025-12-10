@@ -10,7 +10,7 @@ homepage:           https://github.com/Rapha149/AdventOfCode
 build-type:         Simple
 
 common warnings
-    ghc-options: -Wall -dynamic
+    ghc-options: -Wall
 
 executable advent-of-code
     import:           warnings
@@ -267,6 +267,7 @@ executable advent-of-code
         regex-compat,
         regex-pcre,
         regex-tdfa,
+        sbv,
         simple-vec3,
         split,
         tagsoup,

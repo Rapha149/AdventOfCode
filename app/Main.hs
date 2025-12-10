@@ -103,6 +103,9 @@ handleResult silent = \case
     Error err -> do
         abort err
         return ""
+    IOResult ioRes -> do
+        res <- ioRes
+        handleResult silent res
 
 getInput :: Int -> Int -> Source -> IO String
 getInput year day File = loadFileInput year day

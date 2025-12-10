@@ -4,7 +4,7 @@ import Data.Char
 import Data.Tuple.Extra
 import Data.Set (Set)
 
-data Result = V Int | VMsg Int String | RawOCR [[Bool]] | OCR (Set Vec) | Msg String | Error String
+data Result = V Int | VMsg Int String | RawOCR [[Bool]] | OCR (Set Vec) | Msg String | Error String | IOResult (IO Result)
 type Solution = [String] -> Result
 
 type Vec = (Int, Int)
