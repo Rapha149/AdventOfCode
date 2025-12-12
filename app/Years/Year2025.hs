@@ -39,5 +39,4 @@ selectDay day part = case (day, part) of
     (11, 1) -> D11.part1
     (11, 2) -> D11.part2
     (12, 1) -> D12.part1
-    (12, 2) -> D12.part2
     _ -> const $ Error "Unknown day/part combination."
