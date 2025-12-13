@@ -4,60 +4,60 @@ import Util.Util
 import Data.Bits
 import Data.List.Extra
 import Data.Tuple.Extra
+import Data.Heap (MinHeap)
+import qualified Data.Heap as H
 import qualified Data.Set as Set
+import Data.Map.Strict (Map)
+import qualified Data.Map.Strict as Map
 
-type Shape = [Vec]
-data Region = Region { width :: Int, height :: Int, presents :: [Int] }
+type Bitmask = Integer
+type Form = [Vec]
+data Shape = Shape { area :: Int, transformations :: [Form] }
+data Region = Region { width :: Int, height :: Int, presents :: Map Int Int } deriving Show
 
-parseInput :: [String] -> ([Shape], [Region])
-parseInput input = (shapes, map (parseRegion . words) $ lst parts)
-    where parts = split null input
-          shapes = map (\rs -> [(r, c) | (r, row) <- zip [0..] rs, (c, '#') <- zip [0..] row]) $ ini parts
-          parseRegion :: [String] -> Region
-          parseRegion [] = error "Empty list."
-          parseRegion (size:counts) = let (width, height) = pair $ map read $ splitOn "x" $ ini size
-                                          presents = map read counts
-                                      in Region {..}
-
-toBitPos :: Int -> Int -> Int -> Int
-toBitPos width r c = width * r + c
-
-shapeToBits :: Int -> Shape -> Int -> Int -> Integer
-shapeToBits width shape r c = foldl' setBit 0 [toBitPos width (r + dr) (c + dc) | (dr, dc) <- shape]
-
-isValid :: Int -> Int -> Integer -> Shape -> Int -> Int -> Bool
-isValid width height bits shape r c = and [nr >= 0 && nr < height && nc >= 0 && nc < width &&
-    not (testBit bits $ toBitPos width nr nc) | (dr, dc) <- shape, let (nr, nc) = (r + dr, c + dc)]
-
-transform :: Shape -> [Shape]
-transform shape = let rotated = take 4 $ iterate rotate90 shape
-                      flipped = map flipHorizontal rotated
-                      normalized = map normalize (rotated ++ flipped)
-                  in Set.toList $ Set.fromList normalized
-    where rotate90 :: Shape -> Shape
+transform :: Form -> [Form]
+transform grid = let rotated = take 4 $ iterate rotate90 grid
+                     flipped = map flipHorizontal rotated
+                     normalized = map normalize (rotated ++ flipped)
+                 in Set.toList $ Set.fromList normalized
+    where rotate90 :: Form -> Form
           rotate90 s = [(-c, r) | (r, c) <- s]
-          flipHorizontal :: Shape -> Shape
+          flipHorizontal :: Form -> Form
           flipHorizontal = map (first negate)
-          normalize :: Shape -> Shape
+          normalize :: Form -> Form
           normalize s = let (minR, minC) = both minimum $ unzip s
                         in sort [(r - minR, c - minC) | (r, c) <- s]
 
-tryPlace :: Int -> Int -> [[Shape]] -> [(Int, Int)] -> Integer -> Bool
-tryPlace _ _ _ [] _ = True
-tryPlace width height shapes ((_, 0):xs) bits = tryPlace width height shapes xs bits
-tryPlace width height shapes ((idx, count):xs) bits = or [isValid width height bits shape r c && place shape r c |
-                                                            shape <- shapes !! idx, r <- [0..height - 1], c <- [0..width - 1]]
-    where place :: Shape -> Int -> Int -> Bool
-          place shape r c = let bits' = bits .|. shapeToBits width shape r c
-                            in tryPlace width height shapes ((idx, count - 1):xs) bits'
+parseInput :: [String] -> ([Shape], [Region])
+parseInput input = (map parseShape $ ini parts, map (parseRegion . words) $ lst parts)
+    where parts = split null input
+          parseShape :: [String] -> Shape
+          parseShape line = let grid = [(r, c) | (r, row) <- zip [0..] line, (c, '#') <- zip [0..] row]
+                            in Shape (length grid) (transform grid)
+          parseRegion :: [String] -> Region
+          parseRegion [] = error "Empty list."
+          parseRegion (size:counts) = let (width, height) = pair $ sort $ map read $ splitOn "x" $ ini size
+                                          presents = Map.fromList $ zip [0..] $ map read counts
+                                      in Region {..}
+
+place :: Int -> Int -> Bitmask -> Int -> Int -> Form -> Maybe Bitmask
+place width height bits r c form | or [r + dr >= height || c + dc >= width | (dr, dc) <- form] || bits .&. mask /= 0 = Nothing
+                                 | otherwise = Just $ bits .|. mask
+    where mask = foldl' setBit 0 [width * (r + dr) + (c + dc) | (dr, dc) <- form]
+
+findArrangement :: Int -> Int -> [Shape] -> MinHeap (Int, Int, Map Int Int, Bitmask) -> Bool
+findArrangement width height shapes heap | null heap = False
+                                         | needed > width * height - pos - popCount (bits `shiftR` pos) = findArrangement width height shapes rest
+                                         | left <= ((height - row - 3) `div` 3) * (width `div` 3) = True
+                                         | otherwise = findArrangement width height shapes $ foldr H.insert (H.insert (left, pos + 1, presents, bits) rest) next
+    where Just ((left, pos, presents, bits), rest) = H.view heap
+          needed = sum $ Map.mapWithKey (\i count -> (shapes !! i).area * count) presents
+          (row, col) = pos `divMod` width
+          next = [(left - 1, pos + 1, presents', bits') | (i, count) <- Map.toList presents, count > 0, let presents' = Map.insert i (count - 1) presents,
+                    Just bits' <- map (place width height bits row col) (shapes !! i).transformations]
 
 fits :: [Shape] -> Region -> Bool
-fits shapes Region{..} | size < minNeeded = False
-                       | size >= maxNeeded = True
-                       | otherwise = tryPlace width height (map transform shapes) (zip [0..] presents) 0
-    where size = width * height
-          minNeeded = sum $ zipWith (\i n -> length (shapes !! i) * n) [0..] presents
-          maxNeeded = sum presents * 9
+fits shapes Region{..} = findArrangement width height shapes $ H.singleton (sum presents, 0, presents, 0)
 
 part1 :: Solution
 part1 input = V $ length $ filter (fits shapes) regions

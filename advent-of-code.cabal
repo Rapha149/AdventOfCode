@@ -256,6 +256,7 @@ executable advent-of-code
         dotenv,
         extra,
         fingertree,
+        heap,
         hex,
         hmatrix,
         html-conduit,
