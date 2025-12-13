@@ -3,13 +3,12 @@ module Years.Year2024.Day23 (part1, part2) where
 import Util.Util
 import Data.List
 import Data.List.Extra
-import Data.Tuple
 import Data.Set (Set)
 import qualified Data.Set as Set
 
 parseInput :: [String] -> ([String], Set (String, String))
 parseInput input = (Set.toList $ Set.map fst connections, connections)
-    where connections = Set.fromList $ concatMap ((\x -> [x, swap x]) . pair . splitOn "-") input
+    where connections = Set.fromList $ concatMap ((\[a, b] -> [(a, b), (b, a)]) . splitOn "-") input
 
 part1 :: Solution
 part1 input = V $ sum [1 | (a:x1) <- tails computers, (b:x2) <- tails x1, Set.member (a, b) connections,

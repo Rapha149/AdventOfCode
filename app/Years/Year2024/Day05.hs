@@ -2,12 +2,12 @@ module Years.Year2024.Day05 (part1, part2) where
 
 import Util.Util
 import Data.List.Extra
-import Data.Bifunctor
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
 parseInput :: [String] -> (Map (Int, Int) Ordering, [[Int]])
-parseInput = bimap (foldr parseRule Map.empty) (map (map read . splitOn ",")) . pair . split null
+parseInput input = (foldr parseRule Map.empty rules, map (map read . splitOn ",") pages)
+    where [rules, pages] = split null input
 
 parseRule :: String -> Map (Int, Int) Ordering -> Map (Int, Int) Ordering
 parseRule rule = Map.insert (a,b) LT . Map.insert (b,a) GT

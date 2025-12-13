@@ -11,5 +11,5 @@ findLoopSize publicKey n | n == publicKey = 0
 
 part1 :: Solution
 part1 input = V $ foldr ($) 1 $ replicate loopSize (transformStep door)
-    where (card, door) = pair $ map read input
+    where [card, door] = map read input
           loopSize = findLoopSize card 1

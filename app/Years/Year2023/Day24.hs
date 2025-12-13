@@ -16,7 +16,7 @@ isIntersecting :: Double -> Double -> (Stone2, Stone2) -> Bool
 isIntersecting areaMin areaMax (((px1, py1), (vx1, vy1)), ((px2, py2), (vx2, vy2))) | isNothing result || a < 0 || b < 0 = False
                                                                                     | otherwise = inBoundsBoth areaMin areaMax point
     where result = LA.linearSolve ((2 LA.>< 2) [vx1, -vx2, vy1, -vy2]) ((2 LA.>< 1) [px2 - px1, py2 - py1])
-          (a, b) = pair $ concat $ LA.toLists $ fromJust result
+          [a, b] = concat $ LA.toLists $ fromJust result
           point = onBoth (+) (px1, py1) $ both (*a) (vx1, vy1)
 
 part1 :: Solution

@@ -19,14 +19,14 @@ parseStateI :: [Int] -> [String] -> State
 parseStateI inputs program = (parseState program) { inputs = inputs }
 
 instruction :: Int -> Instruction
-instruction 1 = Instruction { params = [False, False], output = Write, fun = Just . uncurry (+) . pair . values }
-instruction 2 = Instruction { params = [False, False], output = Write, fun = Just . uncurry (*) . pair . values }
+instruction 1 = Instruction { params = [False, False], output = Write, fun = (\[a, b] -> Just $ a + b) . values }
+instruction 2 = Instruction { params = [False, False], output = Write, fun = (\[a, b] -> Just $ a * b) . values }
 instruction 3 = Instruction { params = [True], output = Write, fun = Just . hd . values }
 instruction 4 = Instruction { params = [False], output = Output, fun = Just . hd . values }
 instruction 5 = Instruction { params = [False, False], output = Jump, fun = (\case (0:_) -> Nothing; [_, a] -> Just a; _ -> Nothing) . values }
 instruction 6 = Instruction { params = [False, False], output = Jump, fun = (\case [0, a] -> Just a; _ -> Nothing) . values }
-instruction 7 = Instruction { params = [False, False], output = Write, fun = Just . fromEnum . uncurry (<) . pair . values }
-instruction 8 = Instruction { params = [False, False], output = Write, fun = Just . fromEnum . uncurry (==) . pair . values }
+instruction 7 = Instruction { params = [False, False], output = Write, fun = (\[a, b] -> Just $ fromEnum $ a < b) . values }
+instruction 8 = Instruction { params = [False, False], output = Write, fun = (\[a, b] -> Just $ fromEnum $ a == b) . values }
 instruction 9 = Instruction { params = [False], output = RelBase, fun = \Input {..} -> Just $ relBase + hd values }
 instruction _ = error "Invalid opcode."
 

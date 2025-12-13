@@ -36,7 +36,7 @@ parseInput input = (map parseShape $ ini parts, map (parseRegion . words) $ lst 
                             in Shape (length grid) (transform grid)
           parseRegion :: [String] -> Region
           parseRegion [] = error "Empty list."
-          parseRegion (size:counts) = let (width, height) = pair $ sort $ map read $ splitOn "x" $ ini size
+          parseRegion (size:counts) = let [width, height] = sort $ map read $ splitOn "x" $ ini size
                                           presents = Map.fromList $ zip [0..] $ map read counts
                                       in Region {..}
 

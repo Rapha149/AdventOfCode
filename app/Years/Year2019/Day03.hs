@@ -20,7 +20,7 @@ getPath len (x, y) ((dir:num):is) = Map.union (Map.fromList $ zip path [len+1..]
 
 getIntersections :: [String] -> [(Vec, Int)]
 getIntersections input = map (\pos -> (pos, path1 Map.! pos + path2 Map.! pos)) positions
-    where (path1, path2) = pair $ map (getPath 0 (0, 0) . splitOn ",") input
+    where [path1, path2] = map (getPath 0 (0, 0) . splitOn ",") input
           positions = Map.keys $ Map.intersection path1 path2
 
 part1 :: Solution

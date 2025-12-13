@@ -13,7 +13,7 @@ data Sample = Sample { op :: Int, args :: Args, before :: Registers, after :: Re
 
 parseInput :: [String] -> ([Sample], [(Int, Args)])
 parseInput input = (samples, map parseInstruction programInput)
-    where (sampleInput, programInput) = pair $ splitOn ["", "", ""] input
+    where [sampleInput, programInput] = splitOn ["", "", ""] input
           samples = [Sample {..} | [beforeStr, instr, afterStr] <- splitOn [""] sampleInput, let (op, args) = parseInstruction instr,
                                    let before = parseRegisters beforeStr, let after = parseRegisters afterStr]
           parseRegisters :: String -> Registers

@@ -2,14 +2,13 @@ module Years.Year2019.Day06 (part1, part2) where
 
 import Util.Util
 import Data.List.Extra
-import Data.Tuple.Extra
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
 parseInput :: [String] -> Map String [String]
-parseInput = Map.fromListWith (++) . map (second singleton . pair . splitOn ")")
+parseInput input = Map.fromListWith (++) [(k, [v]) | [k, v] <- map (splitOn ")") input]
 
 countOrbits :: Map String [String] -> Int -> String -> Int
 countOrbits orbits count object = count + sumOn' (countOrbits orbits $ count + 1) (Map.findWithDefault [] object orbits)

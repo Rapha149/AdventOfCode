@@ -7,7 +7,7 @@ type Range = (Int, Int)
 
 parseInput :: [String] -> ([Range], [Int])
 parseInput input = (map (pair . map read . splitOn "-") ranges, map read available)
-    where (ranges, available) = pair $ split null input
+    where [ranges, available] = split null input
 
 part1 :: Solution
 part1 input = V $ length $ filter (\i -> any (\(a, b) -> i >= a && i <= b) ranges) available

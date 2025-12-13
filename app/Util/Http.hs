@@ -65,7 +65,9 @@ autoAnswer year day part answer = do
                in case prefix of
                        "That's the right answer!" -> putStrLn $ "\n[AutoAnswer] " <> prefix
                        "You don't seem to be solving the right level." -> checkAnswer year day part answer
-                       _ -> putStrLn $ "\n[AutoAnswer] " <> unwords (words $ subRegex (mkRegex " *\\[[^]]+\\]") text "")
+                       _ -> do
+                           putStrLn $ "\n[AutoAnswer] " <> unwords (words $ subRegex (mkRegex " *\\[[^]]+\\]") text "")
+                           exitFailure
         400 -> do
             hPutStrLn stderr $ printf "[AutoAnswer] Server responded with 400 is your session cookie still valid? (%s)" $ trim body
             exitFailure
@@ -79,10 +81,14 @@ checkAnswer year day part answer = do
     (code, body) <- getHttpResponse req
     case code of
         200 -> let answers = map lst $ body =~ ("<p>Your puzzle answer was <code>([^<]+)</code>.</p>" :: String)
-               in putStrLn $ "\n[CheckAnswer] " <> case (== answer) <$> answers !? (part - 1) of
-                                                        Just True -> "That's the right answer!"
-                                                        Just False -> "That's not the right answer."
-                                                        Nothing -> "Puzzle not solved yet."
+               in case (== answer) <$> answers !? (part - 1) of
+                       Just True -> putStrLn "\n[CheckAnswer] That's the right answer!"
+                       Just False -> do
+                           putStrLn "\n[CheckAnswer] That's not the right answer."
+                           exitFailure
+                       Nothing -> do
+                           putStrLn "\n[CheckAnswer] Puzzle not solved yet."
+                           exitFailure
         400 -> do
             hPutStrLn stderr $ printf "[CheckAnswer] Server responded with 400 is your session cookie still valid? (%s)" $ trim body
             exitFailure

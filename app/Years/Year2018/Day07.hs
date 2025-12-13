@@ -12,7 +12,7 @@ import qualified Data.Map.Strict as Map
 parseInput :: [String] -> Map Char (Set Char)
 parseInput [] = Map.empty
 parseInput (l:ls) = Map.insertWith Set.union b (Set.singleton a) $ parseInput ls
-    where (a, b) = pair $ mapMaybe (\case [x] -> Just x; _ -> Nothing) $ words l
+    where [a, b] = mapMaybe (\case [x] -> Just x; _ -> Nothing) $ words l
 
 getOrder :: Map Char (Set Char) -> Set Char -> String
 getOrder requirements ready = case Set.minView ready of

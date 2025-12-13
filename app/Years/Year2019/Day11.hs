@@ -9,7 +9,7 @@ paint :: Map Vec Bool -> Vec -> Vec -> State -> Map Vec Bool
 paint colors tile (dx, dy) state | state'.status == Finished = colors'
                                  | otherwise = paint colors' (onBoth (+) tile dir') dir' $ state' { outputs = [] }
     where state' = run $ state { inputs = [maybe 0 fromEnum $ colors Map.!? tile] }
-          (color, turn) = pair state'.outputs
+          [color, turn] = state'.outputs
           colors' = Map.insert tile (toEnum color) colors
           dir' = case turn of
                       0 -> (dy, -dx)

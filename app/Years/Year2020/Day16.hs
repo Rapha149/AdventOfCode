@@ -10,8 +10,8 @@ type Range = (Int, Int)
 
 parseInput :: [String] -> (Map String [Range], [Int], [[Int]])
 parseInput input = (rules, yourTicket, nearbyTickets)
-    where (ruleInput, yourInput, nearbyInput) = triple $ split null input
-          rules = Map.fromList $ map (second (map (pair . map read . splitOn "-") . splitOn " or ") . pair . splitOn ": ") ruleInput
+    where [ruleInput, yourInput, nearbyInput] = split null input
+          rules = Map.fromList [(field, map (pair . map read . splitOn "-") $ splitOn " or " ranges) | [field, ranges] <- map (splitOn ": ") ruleInput]
           yourTicket = map read $ splitOn "," $ yourInput !! 1
           nearbyTickets = map (map read . splitOn ",") $ tl nearbyInput
 

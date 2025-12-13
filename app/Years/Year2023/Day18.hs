@@ -2,7 +2,6 @@ module Years.Year2023.Day18 (part1, part2) where
 
 import Util.Util
 import Numeric
-import Data.Bifunctor
 
 getCorners :: [(Char, Int)] -> [Vec]
 getCorners = scanl step (0, 0)
@@ -22,7 +21,7 @@ movesToArea moves = shoelace corners + sum (map snd moves) `div` 2 + 1
     where corners = getCorners moves
 
 part1 :: Solution
-part1 = V . movesToArea . map (bimap hd read . pair . take 2 . words)
+part1 = V . movesToArea . map ((\([d]:c:_) -> (d, read c)) . words)
 
 part2 :: Solution
 part2 = V . movesToArea . map ((\(hex, dir) -> ("RDLU" !! read dir, fst $ hd $ readHex hex)) . splitAt 5 . take 6 . drop 2 . (!! 2) . words)

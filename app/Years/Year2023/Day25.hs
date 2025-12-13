@@ -39,7 +39,8 @@ minCut edges nodes members best bestWeight = minCut edges' nodes' members' best'
 
 lineToEdges :: String -> Edges
 lineToEdges line = Map.fromList $ (a, Map.fromList $ map (, 1) bs) : map (, Map.singleton a 1) bs
-    where (a, bs) = second (splitOn " ") $ pair $ splitOn ": " line
+    where [a, b] = splitOn ": " line
+          bs = words b
 
 part1 :: Solution
 part1 input = V $ size * (length nodes - size)

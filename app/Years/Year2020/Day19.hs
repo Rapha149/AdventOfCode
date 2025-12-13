@@ -1,7 +1,6 @@
 module Years.Year2020.Day19 (part1, part2) where
 
 import Util.Util
-import Data.Bifunctor
 import Data.List.Extra
 import Data.IntMap.Strict (IntMap)
 import qualified Data.IntMap.Strict as IM
@@ -9,8 +8,8 @@ import qualified Data.IntMap.Strict as IM
 data Rule = Chr Char | Rules [[Int]]
 
 parseInput :: [String] -> (IntMap Rule, [String])
-parseInput input = (IM.fromList $ map (bimap read parseRule . pair . splitOn ": ") rules, messages)
-    where (rules, messages) = pair $ split null input
+parseInput input = (IM.fromList [(read i, parseRule rule) | [i, rule] <- map (splitOn ": ") rules], messages)
+    where [rules, messages] = split null input
           parseRule :: String -> Rule
           parseRule ['"', c, '"'] = Chr c
           parseRule str = Rules $ map (map read . words) $ splitOn " | " str

@@ -13,7 +13,7 @@ countNumbers valid mn mx tens num = sum [countNumbers valid mn mx (tens `div` 10
 
 getResult :: (Int -> Bool) -> [String] -> Int
 getResult valid [line] = countNumbers valid mn mx 100000 0
-    where (mn, mx) = pair $ map read $ splitOn "-" line
+    where [mn, mx] = map read $ splitOn "-" line
 getResult _ _ = error "Invalid input."
 
 part1 :: Solution

@@ -1,7 +1,6 @@
 module Years.Year2020.Day21 (part1, part2) where
 
 import Util.Util
-import Data.Bifunctor
 import Data.Tuple.Extra
 import Data.List.Extra
 import Data.Set (Set)
@@ -15,7 +14,7 @@ type Food = ([Ingredient], [Allergen])
 
 getResult :: [String] -> ([Ingredient], Map Allergen (Set Ingredient))
 getResult input = (concatMap fst foods, foldr refinePossibleIngredients initPossible foods)
-    where foods = map (bimap words (splitOn ", ") . pair . splitOn "(contains " . ini) input
+    where foods = [(words is, splitOn ", " as) | [is, as] <- map (splitOn "(contains " . ini) input]
           (ingredients, allergens) = both (Set.fromList . concat) $ unzip foods
           initPossible = Map.fromSet (const ingredients) allergens
           refinePossibleIngredients :: Food -> Map Allergen (Set Ingredient) -> Map Allergen (Set Ingredient)

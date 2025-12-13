@@ -11,8 +11,8 @@ parseInput [] = Map.empty
 parseInput (l:ls) = Map.insert i [(x, y) | x <- [px..px+dx-1], y <- [py..py+dy-1]] $ parseInput ls
     where ws = words l
           i = read $ tl $ hd ws
-          (px, py) = pair $ map read $ splitOn "," $ ini $ ws !! 2
-          (dx, dy) = pair $ map read $ splitOn "x" $ ws !! 3
+          [px, py] = map read $ splitOn "," $ ini $ ws !! 2
+          [dx, dy] = map read $ splitOn "x" $ ws !! 3
 
 getCounts :: Map Int [Vec] -> Map Vec Int
 getCounts = Map.fromListWith (+) . map (, 1) . concat

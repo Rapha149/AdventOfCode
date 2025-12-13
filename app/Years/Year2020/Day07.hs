@@ -10,7 +10,7 @@ import qualified Data.Map.Strict as Map
 parseInput :: [String] -> Map String (Map String Int)
 parseInput [] = Map.empty
 parseInput (l:ls) = Map.insert key bags $ parseInput ls
-    where (key, contains) = pair $ splitOn " bags contain " l
+    where [key, contains] = splitOn " bags contain " l
           bags | contains == "no other bags." = Map.empty
                | otherwise = Map.fromList $ map ((\ws -> (unwords $ ini $ tl ws, read $ hd ws)) . words) $ splitOn ", " contains
 

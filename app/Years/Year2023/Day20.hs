@@ -10,7 +10,7 @@ data Module = Broadcaster [String] | FlipFlop Bool [String] | Conjunction (Map S
 
 parseInput :: [String] -> Map String Module
 parseInput input = Map.foldrWithKey (uncurry Map.insert .: toModule) Map.empty outputs
-    where outputs = Map.fromList $ map (second (splitOn ", ") . pair . splitOn " -> ") input
+    where outputs = Map.fromList [(name, splitOn ", " outs) | [name, outs] <- map (splitOn " -> ") input]
           toModule :: String -> [String] -> (String, Module)
           toModule "broadcaster" out = ("broadcaster", Broadcaster out)
           toModule ('%':name) out = (name, FlipFlop False out)

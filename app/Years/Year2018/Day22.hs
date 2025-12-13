@@ -11,9 +11,9 @@ import Data.PriorityQueue.FingerTree (PQueue)
 import qualified Data.PriorityQueue.FingerTree as PQ
 
 parseInput :: [String] -> (Int, Vec)
-parseInput [depthInput, targetInput] = (depth, target)
+parseInput [depthInput, targetInput] = (depth, (t1, t2))
     where depth = read (lst $ words depthInput) `mod` 20183
-          target = pair $ map read $ splitOn "," $ lst $ words targetInput
+          [t1, t2] = map read $ splitOn "," $ lst $ words targetInput
 parseInput _ = error "Invalid input"
 
 getErosionLevel :: Int -> Vec -> Map Vec Int -> Vec -> Map Vec Int

@@ -14,7 +14,7 @@ type PartRanges = Map Char (Int, Int)
 
 parseWorkflow :: String -> (String, [Rule])
 parseWorkflow workflow = (name, map parseRule $ splitOn "," rules)
-    where (name, rules) = pair $ splitOn "{" $ ini workflow
+    where [name, rules] = splitOn "{" $ ini workflow
           parseRule :: String -> Rule
           parseRule rule = case splitOn ":" rule of
                                 [t] -> Direct $ parseTarget t
@@ -43,7 +43,9 @@ isAccepted workflows (part, Name name) = isAccepted workflows (part, getTarget $
 
 part1 :: Solution
 part1 input = V $ sum $ map (Map.foldr (+) 0 . fst) $ filter (isAccepted workflows) $ map (, Name "in") parts
-    where (workflows, parts) = bimap (Map.fromList . map parseWorkflow) (map parsePart) $ pair $ split null input
+    where [workflowInput, partInput] = split null input
+          workflows = Map.fromList $ map parseWorkflow workflowInput
+          parts = map parsePart partInput
 
 
 getAcceptedCombinations :: Workflows -> (PartRanges, Target) -> Int

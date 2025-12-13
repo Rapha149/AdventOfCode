@@ -27,35 +27,19 @@ hd :: [a] -> a
 hd (x:_) = x
 hd [] = error "hd: empty list"
 
-hdOr :: a -> [a] -> a
-hdOr a [] = a
-hdOr _ xs = hd xs
-
 tl :: [a] -> [a]
 tl (_:xs) = xs
 tl [] = error "tl: empty list"
-
-tlOr :: [a] -> [a] -> [a]
-tlOr a [] = a
-tlOr _ xs = tl xs
 
 lst :: [a] -> a
 lst [x] = x
 lst (_:xs) = lst xs
 lst [] = error "lst: empty list"
 
-lstOr :: a -> [a] -> a
-lstOr a [] = a
-lstOr _ xs = lst xs
-
 ini :: [a] -> [a]
 ini [_] = []
 ini (x:xs) = x : ini xs
 ini [] = error "ini: empty list"
-
-iniOr :: [a] -> [a] -> [a]
-iniOr a [] = a
-iniOr _ xs = ini xs
 
 pair :: [a] -> (a, a)
 pair [a, b] = (a, b)

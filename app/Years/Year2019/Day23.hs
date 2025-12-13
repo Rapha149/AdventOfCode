@@ -18,7 +18,7 @@ runComputer computers n | state'.status == WaitForInput = (Map.insert n (state' 
           (inputs, queue') = fromMaybe ([-1], []) $ uncons queue
           state' = runUntilIO $ state { inputs = state.inputs ++ take 1 inputs }
           state'' = runUntilIO $ runUntilIO state'
-          (dest, x, y) = triple state''.outputs
+          [dest, x, y] = state''.outputs
           computers' = Map.insert n (state'' { inputs = [], outputs = [] }, queue) computers
 
 runComputers1 :: Network -> Int -> Int

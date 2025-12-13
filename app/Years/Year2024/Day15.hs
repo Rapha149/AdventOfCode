@@ -10,17 +10,17 @@ import qualified Data.Map.Strict as Map
 
 type Obstacles = Map Vec Bool -- point -> movable
 
-parseMap :: [String] -> (Obstacles, Vec)
-parseMap input = (Map.fromList $ map (second (== 'O')) $ filter ((`elem` "#O") . snd) chars, fst $ fromJust $ find ((== '@') . snd) chars)
-    where chars = [((r, c), x) | (r, row) <- zip [0..] input, (c, x) <- zip [0..] row]
-
-parseMoves :: String -> [Vec]
-parseMoves = map (\case
-                  '^' -> (-1, 0)
-                  'v' -> (1, 0)
-                  '<' -> (0, -1)
-                  '>' -> (0, 1)
-                  _ -> error "Unknown direction.")
+parseInput :: [String] -> (Obstacles, Vec, [Vec])
+parseInput input = (obstacles, start, moves)
+    where [mapInput, movesInput] = split null input
+          chars = [((r, c), x) | (r, row) <- zip [0..] mapInput, (c, x) <- zip [0..] row]
+          obstacles = Map.fromList $ map (second (== 'O')) $ filter ((`elem` "#O") . snd) chars
+          start = fst $ fromJust $ find ((== '@') . snd) chars
+          moves = map (\case '^' -> (-1, 0)
+                             'v' -> (1, 0)
+                             '<' -> (0, -1)
+                             '>' -> (0, 1)
+                             _ -> error "Unknown direction.") $ concat movesInput
 
 moveObstacle :: Obstacles -> Vec -> Vec -> Maybe Obstacles
 moveObstacle obstacles obstacle delta = Map.delete obstacle <$> move obstacle
@@ -45,7 +45,7 @@ sumCoordinates = Map.foldrWithKey (\(r, c) b -> (+) $ if b then r * 100 + c else
 
 part1 :: Solution
 part1 input = V $ sumCoordinates $ moveRobot obstacles start moves
-    where ((obstacles, start), moves) = bimap parseMap (parseMoves . concat) $ pair $ split null input
+    where (obstacles, start, moves) = parseInput input
 
 
 getWideObstacle :: Obstacles -> Vec -> Maybe (Vec, Bool)
@@ -78,5 +78,5 @@ moveRobotWide obstacles robot (delta:ds) | isNothing obstacle = moveRobotWide ob
 
 part2 :: Solution
 part2 input = V $ sumCoordinates $ moveRobotWide wideObstacles (second (*2) start) moves
-    where ((obstacles, start), moves) = bimap parseMap (parseMoves . concat) $ pair $ split null input
+    where (obstacles, start, moves) = parseInput input
           wideObstacles = Map.mapKeys (second (*2)) obstacles

@@ -11,10 +11,11 @@ type Reactions = Map String (Int, [(String, Int)])
 parseInput :: [String] -> Reactions
 parseInput [] = Map.empty
 parseInput (l:ls) = Map.insert chemical (amount, map parseChemical $ splitOn ", " inputs) $ parseInput ls
-    where (inputs, output) = pair $ splitOn " => " l
+    where [inputs, output] = splitOn " => " l
           (chemical, amount) = parseChemical output
           parseChemical :: String -> (String, Int)
-          parseChemical = second read . swap . pair . words
+          parseChemical s = let [count, chem] = words s
+                            in (chem, read count)
 
 topoSort :: Reactions -> [String] -> Int -> (Map String Int, Int)
 topoSort _ [] num = (Map.empty, num)

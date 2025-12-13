@@ -10,13 +10,13 @@ data Tile = Wall | Flowing | Settled deriving (Show, Eq)
 parseInput :: [String] -> Map Vec Tile
 parseInput [] = Map.empty
 parseInput (('x':'=':l):ls) = Map.fromList [((x, y), Wall) | y <- [y1..y2]] `Map.union` parseInput ls
-    where (xInput, yInput) = pair $ splitOn ", "l
+    where [xInput, yInput] = splitOn ", "l
           x = read xInput
-          (y1, y2) = pair $ map read $ splitOn ".." $ drop 2 yInput
+          [y1, y2] = map read $ splitOn ".." $ drop 2 yInput
 parseInput (('y':'=':l):ls) = Map.fromList [((x, y), Wall) | x <- [x1..x2]] `Map.union` parseInput ls
-    where (yInput, xInput) = pair $ splitOn ", " l
+    where [yInput, xInput] = splitOn ", " l
           y = read yInput
-          (x1, x2) = pair $ map read $ splitOn ".." $ drop 2 xInput
+          [x1, x2] = map read $ splitOn ".." $ drop 2 xInput
 parseInput _ = error "Invalid input"
 
 flow :: Int -> Map Vec Tile -> Vec -> Map Vec Tile

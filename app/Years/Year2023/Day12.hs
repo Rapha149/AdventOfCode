@@ -26,7 +26,7 @@ possibleCombinations springs conditions = Map.foldr (+) 0 $ getPermutations spri
                                | otherwise = id
 
 part1 :: Solution
-part1 = V . sum . map (uncurry possibleCombinations . (\(a, b) -> (a, map read $ splitOn "," b)) . pair . words)
+part1 = V . sum . map (uncurry possibleCombinations . (\[a, b] -> (a, map read $ splitOn "," b)) . words)
 
 part2 :: Solution
-part2 = V . sum . map (uncurry possibleCombinations . (\(a, b) -> (intercalate "?" $ replicate 5 a, concat $ replicate 5 $ map read $ splitOn "," b)) . pair . words)
+part2 = V . sum . map (uncurry possibleCombinations . (\[a, b] -> (intercalate "?" $ replicate 5 a, concat $ replicate 5 $ map read $ splitOn "," b)) . words)

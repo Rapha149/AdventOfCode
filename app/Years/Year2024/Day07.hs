@@ -2,7 +2,6 @@ module Years.Year2024.Day07 (part1, part2) where
 
 import Util.Util
 import Data.List.Split
-import Data.Bifunctor
 import Control.Monad
 
 type Operator = Int -> Int -> Int
@@ -15,7 +14,7 @@ isPossible operators (target, numbers) = any ((== target) . calc . zip (reverse 
           calc ((x, op):xs) = x `op` calc xs
 
 sumPossible :: [Operator] -> [String] -> Int
-sumPossible operators = sum . map fst . filter (isPossible operators) . map (bimap read (map read . words) . pair . splitOn ":")
+sumPossible operators = sum . map fst . filter (isPossible operators) . map ((\[a, b] -> (read a, map read $ words b)) . splitOn ":")
 
 part1 :: Solution
 part1 = V . sumPossible [(+), (*)]

@@ -6,8 +6,8 @@ import Data.List.Split
 parseInput :: [String] -> [(Int, Int, Char, String)]
 parseInput [] = []
 parseInput (l:ls) = (n1, n2, lst policy, password) : parseInput ls
-    where (policy, password) = pair $ splitOn ": " l
-          (n1, n2) = pair $ map read $ splitOn "-" $ ini policy
+    where [policy, password] = splitOn ": " l
+          [n1, n2] = map read $ splitOn "-" $ ini policy
 
 isValid1 :: (Int, Int, Char, String) -> Bool
 isValid1 (minCount, maxCount, char, password) = count >= minCount && count <= maxCount

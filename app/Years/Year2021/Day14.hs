@@ -16,7 +16,7 @@ step rules = Map.foldrWithKey stepPair Map.empty
 getResult :: Int -> [String] -> Int
 getResult steps input = maximum quantities - minimum quantities
     where template = hd input
-          rules = Map.fromList $ map ((\xs -> (pair $ hd xs, hd $ lst xs)) . words) $ drop 2 input
+          rules = Map.fromList $ map ((\[[a, b], "->", [c]] -> ((a, b), c)) . words) $ drop 2 input
           initCounts = Map.fromListWith (+) $ zipWith (curry (, 1)) template (tl template)
           counts = foldr ($) initCounts $ replicate steps (step rules)
           quantities = Map.elems $ Map.insertWith (+) (hd template) 1 $ Map.mapKeysWith (+) snd counts

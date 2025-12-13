@@ -30,7 +30,7 @@ cmpLists (x:xs) (y:ys) = case cmp x y of
                               o -> o
 
 part1 :: Solution
-part1 = V . sumOn' fst . filter ((== LT) . uncurry cmp . pair . map parse . snd) . zip [1..] . split null
+part1 = V . sumOn' fst . filter (\(_, [a, b]) -> cmp (parse a) (parse b) == LT) . zip [1..] . split null
 
 part2 :: Solution
 part2 input = V $ productOn' fst $ filter ((`elem` dividers) . snd) $ zip [1..] sorted

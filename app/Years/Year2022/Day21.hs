@@ -4,7 +4,6 @@ import Util.Util
 import Control.Applicative
 import Data.Maybe
 import Data.List.Split
-import Data.Tuple.Extra
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Map.Strict (Map)
@@ -13,7 +12,7 @@ import qualified Data.Map.Strict as Map
 data Monkey = N Int | O String String Char
 
 parseInput :: [String] -> Map String Monkey
-parseInput input = Map.fromList $ map (second (parseMonkey . words) . pair . splitOn ": ") input
+parseInput input = Map.fromList [(name, parseMonkey $ words monkey) | [name, monkey] <- map (splitOn ": ") input]
     where parseMonkey :: [String] -> Monkey
           parseMonkey [d] = N $ read d
           parseMonkey [m1, op, m2] = O m1 m2 $ hd op

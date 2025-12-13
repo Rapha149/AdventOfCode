@@ -17,7 +17,7 @@ parseInput (l:ls) = (case op of
                           "acc" -> Acc
                           "jmp" -> Jmp
                           _ -> error "Invalid instruction.") value Seq.<| parseInput ls
-    where (op, v) = pair $ words l
+    where [op, v] = words l
           value = read $ case v of ('+':xs) -> xs; _ -> v
 
 getAcc :: Seq Instruction -> Int -> Set Int -> (Int, Bool)

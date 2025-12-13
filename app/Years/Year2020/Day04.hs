@@ -12,7 +12,7 @@ type Passport = Map String String
 parseInput :: [String] -> [Passport]
 parseInput = map parsePassport . split null
     where parsePassport :: [String] -> Passport
-          parsePassport = Map.fromList . map (pair . splitOn ":") . words . unwords
+          parsePassport ls = Map.fromList [(k, v) | [k, v] <- map (splitOn ":") $ words $ unwords ls]
 
 hasFields :: Passport -> Bool
 hasFields passport = all (`Map.member` passport) ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
